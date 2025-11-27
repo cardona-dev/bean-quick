@@ -60,8 +60,8 @@ const Login = () => {
     };
 
     return (
-        <div style={{ maxWidth: '400px', margin: '0 auto' }}>
-            <h2>Iniciar Sesión</h2>
+        <div>
+            
             
             {/* Muestra mensajes de estado */}
             {successMessage && <p style={{ color: 'green', border: '1px solid lightgreen', padding: '10px' }}>{successMessage}</p>}

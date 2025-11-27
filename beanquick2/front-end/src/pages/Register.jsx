@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,Link } from 'react-router-dom';
 
 // Configura la URL base de tu API de Laravel
 const API_URL = 'http://127.0.0.1:8000/api'; 
@@ -59,13 +59,13 @@ const Register = () => {
     };
 
     return (
-        <div style={{ maxWidth: '400px', margin: '0 auto' }}>
-            <h2>Registro de Usuario</h2>
-            
+        <div className="site-header">
+        <div className='container container_form'>
             {/* Muestra errores */}
             {error && <p style={{ color: 'red', border: '1px solid red', padding: '10px' }}>{error}</p>}
-            
-            <form onSubmit={handleSubmit}>
+            <div className="form">
+            <form onSubmit={handleSubmit} className='form'>
+                <h2>registrate</h2>
                 <div style={{ marginBottom: '15px' }}>
                     <label>Nombre:</label>
                     <input
@@ -114,10 +114,25 @@ const Register = () => {
                     />
                 </div>
                 
-                <button type="submit" style={{ padding: '10px 20px', backgroundColor: 'green', color: 'white', border: 'none', cursor: 'pointer' }}>
+                <button type="submit" className='submit'>
                     Registrarse
                 </button>
             </form>
+            </div>
+            <div className="information-form">
+                <div className="info_extra">
+                    <p>contactanos!</p>
+                    <p><strong>3016013816</strong></p>
+                    <a href="#">BeanQuick@gmail</a>
+                </div>
+                <div className="info_extra">
+                    <p>ya tienes una cuenta?</p>
+                    <Link to='/login' className='link'>Login</Link>
+                </div>
+
+            </div>
+            </div>
+
         </div>
     );
 };
