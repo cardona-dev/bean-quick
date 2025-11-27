@@ -1,68 +1,296 @@
+html{
+    font-size: 62.5%;
+    box-sizing: border-box;
+}
+
+*,*::after,*::before{
+    box-sizing: inherit;
+    margin: 0;
+    padding: 0;
+}
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --primario: #3B2F2F;
+  --secundario: #C89F7B;
+  --terciario: #f3f4f6;
+  --cuaternario: #4B3F36;
+  --acento: #E27D60;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+body{
+    background-color: #f3f4f6;
+    color: var(--primario);
+    font-family: Arial, sans-serif;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+/*utilidades*/
+.text_center{
+    text-align: center;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.container{
+    max-width: 120rem;
+    margin: 0 auto;
+    padding: 0 2rem;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+/*header y navegacion*/
+
+.site-header{
+  background-image: url('../public/img/header.png');
+  background-position: center center;
+  background-size: cover;
+  width: 100%;
+  height: 70vh;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.header_content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.logo{
+    margin-bottom: 2rem;
+}
+
+.logo img{
+    max-width: 40rem;
+    height: auto;
+}
+
+.text_header h2{
+    font-size: 7rem;
+    color: white;
+    font-weight: 400;
+}
+.text_header h2 span{
+    display: block;
+    font-size: 3rem;
+    margin-top: 1rem;
+    color: #E27D60;
+}
+
+@media (min-width:768px) {
+  
+.header_content{
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    justify-content: center;
+}
+    .text_header h2{
+        font-size: 5rem;
+    }
+    
+    .text_header h2 span{
+        font-size: 3rem;
+    }
+}
+
+/*Sobre nosotros*/
+.sobre_nosotros{
+    padding: 5rem 0;
+}
+
+h2{
+    color:var(--secundario);
+    text-transform: capitalize;
+    font-weight: 400;
+    font-size: 4rem;
+    margin-bottom: 4rem;
+}
+
+h2:hover{
+  text-shadow: .1rem .1rem 2rem var(--acento);
+}
+
+h2 span{
+    color: var(--primario);
+}
+
+.contenido_nosotros{
+    display: flex;
+    flex-direction: column;
+}
+
+.container_items{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+@media (min-width:768px){
+    .container_items{
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+
+.item_nosotros{
+    flex: 0 0 calc(100% - 1rem);
+    color: #f3f4f6;
+    border: 1px solid var(--secundario);
+    margin: 1rem;
+    padding: 2rem 1rem;
+    border-radius: 1rem;
+    transition: box-shadow 1s ease, background-color 1s ease;
+    background-color: var(--terciario);
+}
+
+.item_nosotros:hover{
+    box-shadow: .1rem .1rem 4rem var(--secundario);
+    background-color: #fff;
+    color: var(--primario);
+}
+
+@media (min-width:768px){
+    .item_nosotros{
+        flex: 0 0 calc(33.3% - 2rem);
+    }
+}
+
+.item_nosotros i{
+    color: var(--acento);
+    margin-bottom: 2rem;
+}
+
+.item_nosotros h3{
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    text-transform: capitalize;
+}
+
+.item_nosotros p{
+    font-size: 1.6rem;
+    line-height: 1.8;
+}
+
+/*productos*/
+.seccion_productos{
+    background-color: var(--primario);
+    padding: 5rem 0;
+}
+
+.seccion_productos h2{
+    color: var(--terciario);
+}
+
+.productos{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+@media (min-width:768px){
+    .productos{
+        flex-direction: row;
+    }
+}
+
+.producto_card{
+    flex: 0 0 calc(100% - 2rem);
+    background-color: var(--terciario);
+    border-radius: 1rem;
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+}
+
+@media (min-width:768px){
+    .producto_card{
+        flex: 0 0 calc(25% - 2rem);
+    }
+}
+
+.card_header{
+    position: relative;
+}
+
+.card_header img{
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 1s ease;
+}
+
+.producto_card:hover img{
+    transform: scale(1.1);
+}
+
+.card_header p{
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+    padding: 1rem 0;
+    background-color: var(--secundario);
+    width: 100%;
+    border-radius: 0 0 1rem 1rem;
+    text-transform: capitalize;
+    transition: opacity 1s ease;
+}
+
+.producto_card:hover p{
+    opacity: 0;
+}
+
+/*aliados*/
+.aliados{
+    background-color: var(--terciario);
+    padding: 5rem 0;
+}
+
+.aliados h2{
+    color: var(--primario);
+}
+
+.aliados_container{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.cont_ali{
+    flex: 0 0 calc(100% - 1rem);
+}
+
+@media (min-width:768px){
+    .aliados_container{
+        flex-direction: row;
+        align-items: stretch;
+    }
+    .cont_ali{
+        flex: 0 0 calc(50% - 1rem);
+    }
+}
+
+.text_aliados p{
+    font-size: 1.6rem;
+    line-height: 1.8;
+    text-align: justify;
+}
+
+.logo_aliados{
+    background-color: var(--secundario);
+    padding: 2rem;
+    border-radius: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: box-shadow 0.3s ease;
+}
+
+.logo_aliados img{
+    max-width: 100%;
+    height: auto;
+}
+
+.logo_aliados:hover{
+    box-shadow: 0 0 1rem var(--acento);
 }

@@ -1,42 +1,171 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* --- VARIABLES (Asegúrate de tenerlas definidas) --- */
+:root {
+    --primario: #4B3F36;
+    --secundario: #a3725d; 
+    --terciario: #7f5539;
+    --blanco: #fff;
+    /* Altura que se usa para el padding-top de main */
+    --nav-height: 7rem; 
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+
+/* --- RESET Y BASE --- */
+
+html {
+    font-size: 62.5%; 
+    box-sizing: border-box;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+*,
+*::after,
+*::before {
+    box-sizing: inherit;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+body {
+    font-family: sans-serif;
+    font-size: 1.8rem;
 }
 
-.card {
-  padding: 2em;
+/* --- AJUSTE DE CONTENIDO PRINCIPAL --- */
+
+/* Agrega padding superior al main para compensar el nav fijo */
+.main-content {
+    padding-top: var(--nav-height); 
 }
 
-.read-the-docs {
-  color: #888;
+/* --- TÍTULO/LOGO --- */
+
+h1 {
+    display: inline;
+    font-size: 2.5rem;
+    color: var(--primario); 
+    font-weight: 400;
+}
+
+h1 span {
+    font-weight: 700;
+}
+
+.item-tittle {
+    text-decoration: none;
+}
+
+/* --- ESTILOS DE NAVEGACIÓN (NAV) --- */
+
+.nav {
+    background-color: #e9d3c8;
+    
+    /* PROPIEDADES PARA FIJAR EL MENÚ */
+    position: fixed; 
+    top: 0;          
+    width: 100%;     
+    z-index: 1000;   
+}
+
+.nav_items {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    padding: 1rem 2rem; 
+    min-height: var(--nav-height); /* Establece una altura mínima para la barra */
+}
+
+/* Botón de Hamburguesa: Oculto por defecto */
+.menu-toggle {
+    display: none; 
+    font-size: 2.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--primario); 
+}
+
+/* Contenedor de enlaces: Diseño de escritorio */
+.nav-links-wrapper {
+    display: flex; 
+    align-items: center;
+}
+
+/* Estilo de los enlaces individuales */
+.nav_items .link {
+    color: var(--blanco);
+    text-decoration: none;
+    padding: 1rem 2rem; 
+    margin: 0 1rem; 
+    font-size: 1.8rem;
+    border-radius: 1rem;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Estado :hover y Activo */
+.nav_items .link:hover,
+.nav_items .link.active { 
+    background-color: var(--secundario); 
+    box-shadow: 0 0 10px var(--secundario);
+    color: var(--blanco);
+}
+
+/* Estilo para el último enlace (Registro) */
+.nav_items .link:last-of-type {
+    background-color: var(--secundario);
+}
+
+.nav_items .link:last-of-type:hover {
+    background-color: var(--blanco);
+    color: #7f5539; 
+    box-shadow: 0 0 10px var(--secundario);
+}
+
+/* --- MEDIA QUERY (MÓVIL - Máx. 768px) --- */
+
+@media (max-width: 768px) {
+    .nav_items {
+        flex-wrap: wrap; 
+    }
+    /* Mostrar el botón de hamburguesa en móvil */
+    .menu-toggle {
+        display: block;
+        order: 2;
+    }
+    /* Contenedor de enlaces: Configuración para el despliegue animado */
+    .nav-links-wrapper {
+        /* Despliegue en columna */
+        flex-direction: column;
+        width: 100%; 
+        position: absolute;
+        top: var(--nav-height); /* Posición justo debajo de la barra */
+        left: 0;
+        background-color: #d8c2b5; 
+        z-index: 999; 
+        
+        /*  CLAVE DE LA ANIMACIÓN: Ocultar con max-height: 0 */
+        max-height: 0;
+        overflow: hidden; 
+        
+        /*  CLAVE DE LA ANIMACIÓN: Transición suave */
+        transition: max-height 0.5s ease-in-out; 
+    }
+    
+    /* Clase 'active': El menú está abierto */
+    .nav-links-wrapper.active {
+        /* Altura suficientemente grande para el contenido */
+        max-height: 500px; 
+    }
+
+    /* Estilo de los enlaces en el menú móvil */
+    .nav-links-wrapper .link {
+        width: 50%;
+        text-align: center;
+        margin: 1rem;
+        padding: 15px 20px;
+        color: var(--primario);
+        background: none; 
+        box-shadow: none;
+    }
+
+    /* Estilo móvil para el último enlace */
+    .nav-links-wrapper .link:last-of-type {
+        color: white;
+    }
 }

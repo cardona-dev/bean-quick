@@ -1,53 +1,73 @@
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import Register from './pages/Register'; // Asegúrate de crear este archivo
-import Login from './pages/Login';       // Asegúrate de crear este archivo
-import Home from './pages/Home';         // Componente de inicio simple
+import Register from './pages/Register'; 
+import Login from './pages/Login'; 
+import Home from './pages/Home';
+import './App.css';
 
-// --- Componente de Navegación (Header) ---
-// Este componente contendrá los links que se muestran en todas las páginas.
+// --- Componente de Navegación (Header) con Lógica Responsiva ---
 const Header = () => {
-  return (
-    <nav style={{ padding: '10px 20px', backgroundColor: '#333', color: 'white' }}>
-      <Link to="/" style={{ color: 'white', marginRight: '20px', textDecoration: 'none' }}>
-        Inicio
-      </Link>
-      <Link to="/login" style={{ color: 'white', marginRight: '20px', textDecoration: 'none' }}>
-        Login
-      </Link>
-      <Link to="/register" style={{ color: 'white', textDecoration: 'none' }}>
-        Registro
-      </Link>
-    </nav>
-  );
+    // 1. Estado para controlar si el menú móvil está abierto o cerrado
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    // Función para alternar el estado (abrir/cerrar)
+    const toggleMenu = () => {
+        setIsMenuOpen(!isMenuOpen);
+    };
+
+    return (
+        <nav className='nav'>
+            <div className="container nav_items">
+                {/* Título/Logo */}
+                <div className="tittle">
+                    <Link to='/' className='item-tittle'>
+                        <h1>Bean <span>Quick</span></h1>
+                    </Link>
+                </div>
+                
+                {/* 2. Botón de Hamburguesa (para móvil) */}
+                <button 
+                    className="menu-toggle" 
+                    onClick={toggleMenu} 
+                    aria-expanded={isMenuOpen}
+                    aria-controls="nav-menu"
+                >
+                    {/* Puedes usar un icono o texto simple, p. ej., ☰ o X */}
+                    {isMenuOpen ? '✕' : '☰'} 
+                </button>
+
+                {/* 3. Contenedor de Enlaces con Clase Condicional */}
+                <div className={`nav-links-wrapper ${isMenuOpen ? 'active' : ''}`} id="nav-menu">
+                    <Link to="/" className='link' onClick={() => setIsMenuOpen(false)}>
+                        Inicio
+                    </Link>
+                    <Link to="/login" className='link' onClick={() => setIsMenuOpen(false)}>
+                        Login
+                    </Link>
+                    <Link to="/register" className='link' onClick={() => setIsMenuOpen(false)}>
+                        Registro
+                    </Link>
+                </div>
+            </div>
+        </nav>
+    );
 };
 
 // --- Componente Principal de la Aplicación ---
 function App() {
-  return (
-    // 1. BrowserRouter debe envolver toda la aplicación
-    <BrowserRouter>
-      {/* El Header se renderiza en TODAS las rutas */}
-      <Header /> 
-      
-      <main style={{ padding: '20px' }}>
-        {/* 2. Routes define las áreas donde se cargarán los componentes de ruta */}
-        <Routes>
-          {/* Ruta de Inicio (la página principal) */}
-          <Route path="/" element={<Home />} />
-          
-          {/* Ruta de Login */}
-          <Route path="/login" element={<Login />} />
-          
-          {/* Ruta de Registro */}
-          <Route path="/register" element={<Register />} />
-          
-          {/* Ruta 404 (opcional) */}
-          <Route path="*" element={<h1>404: Página no encontrada</h1>} />
-        </Routes>
-      </main>
-      
-    </BrowserRouter>
-  );
+    return (
+        <BrowserRouter>
+            <Header /> 
+            <main>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="*" element={<h1>404: Página no encontrada</h1>} />
+                </Routes>
+            </main>
+        </BrowserRouter>
+    );
 }
 
 export default App;
