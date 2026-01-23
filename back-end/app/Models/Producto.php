@@ -39,14 +39,17 @@ class Producto extends Model
                     ->withPivot('cantidad')
                     ->withTimestamps();
     }
-
+public function calificaciones()
+{
+    // Esto le dice a Laravel que un producto tiene muchas calificaciones
+    return $this->hasMany(Calificacion::class);
+}
     /**
      * Relación: un producto pertenece a una empresa
-     */
-    public function empresa()
-    {
-        return $this->belongsTo(Empresa::class);
-    }
+     */public function empresa()
+{
+    return $this->belongsTo(Empresa::class, 'empresa_id');
+}
     public function categoria() {
     return $this->belongsTo(Categoria::class);
     }

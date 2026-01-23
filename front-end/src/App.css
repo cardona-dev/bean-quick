@@ -168,4 +168,114 @@ h1 span {
     .nav-links-wrapper .link:last-of-type {
         color: white;
     }
+}   
+/* --- NUEVOS ESTILOS PARA EL DROPDOWN DE USUARIO --- */
+
+.user-dropdown-container {
+    position: relative;
+    display: inline-block;
+    margin-left: 1rem;
+}
+
+/* El botón que dice "Mi Cuenta" */
+.user-nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background-color: var(--terciario); /* Color café de tus variables */
+    color: var(--blanco);
+    padding: 0.8rem 1.5rem;
+    border-radius: 2rem;
+    border: none;
+    cursor: pointer;
+    font-size: 1.6rem;
+    font-family: inherit;
+    transition: all 0.3s ease;
+}
+
+.user-nav-btn:hover {
+    background-color: var(--primario);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* El menú que aparece al hacer clic */
+.user-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 1rem);
+    right: 0;
+    background-color: var(--blanco);
+    min-width: 20rem;
+    border-radius: 1rem;
+    box-shadow: 0 1rem 3rem rgba(0,0,0,0.15);
+    overflow: hidden;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-header {
+    padding: 1.2rem 1.6rem;
+    background-color: #f8f5f2;
+    font-size: 1.2rem;
+    color: var(--terciario);
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+}
+
+/* Enlaces dentro del menú desplegable */
+.user-dropdown-menu a, 
+.logout-action {
+    padding: 1.2rem 1.6rem;
+    text-decoration: none;
+    color: var(--primario);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.5rem;
+    transition: background 0.2s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.user-dropdown-menu a:hover {
+    background-color: #fcf6f2;
+    color: var(--terciario);
+}
+
+.dropdown-divider {
+    height: 1px;
+    background-color: #eee;
+    margin: 0.5rem 0;
+}
+
+.logout-action {
+    color: #d9534f !important; /* Color rojo suave para cerrar sesión */
+}
+
+.logout-action:hover {
+    background-color: #fff5f5;
+}
+
+/* Animación de la flechita */
+.rotate {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
+}
+
+/* Ajuste para móvil */
+@media (max-width: 768px) {
+    .user-dropdown-container {
+        margin: 1rem 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    .user-dropdown-menu {
+        position: static; /* En móvil se despliega hacia abajo ocupando espacio */
+        width: 90%;
+        margin-top: 1rem;
+    }
 }
