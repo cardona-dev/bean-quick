@@ -62,4 +62,9 @@ public function calificaciones()
     {
         return $this->imagen ? asset('storage/' . $this->imagen) : asset('images/placeholder-producto.png');
     }
+    public function pedidos()
+{
+    // Si tu tabla pivote se llama 'pedido_producto'
+    return $this->belongsToMany(Pedido::class, 'pedido_productos');
+}
 }

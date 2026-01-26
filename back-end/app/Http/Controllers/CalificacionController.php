@@ -11,10 +11,14 @@ use Illuminate\Http\JsonResponse;
 class CalificacionController extends Controller
 {
     /**
-     * Guardar una nueva calificación
+     * FUNCIÓN STORE:
+     * Registra una nueva opinión en la base de datos. 
+     * Implementa reglas de negocio importantes para asegurar que las reseñas sean reales.
      */
     public function store(Request $request): JsonResponse
     {
+        // Validación de datos: asegura que el pedido y producto existan, 
+        // y que las estrellas estén en el rango de 1 a 5.
         $request->validate([
             'pedido_id'   => 'required|exists:pedidos,id',
             'producto_id' => 'required|exists:productos,id',
@@ -23,7 +27,8 @@ class CalificacionController extends Controller
         ]);
 
         try {
-            // 1. Verificar que el pedido realmente pertenezca al usuario y esté ENTREGADO
+            // 1. Verificación de Propiedad y Estado:
+            // Busca el pedido asegurándose de que pertenezca al usuario autenticado.
             $pedido = Pedido::where('id', $request->pedido_id)
                             ->where('user_id', Auth::id())
                             ->first();
@@ -32,11 +37,13 @@ class CalificacionController extends Controller
                 return response()->json(['message' => 'Pedido no encontrado.'], 404);
             }
 
+            // Regla de Oro: Solo se puede calificar si el pedido ya fue entregado.
             if (strtolower($pedido->estado) !== 'entregado') {
                 return response()->json(['message' => 'Solo puedes calificar productos de pedidos entregados.'], 403);
             }
 
-            // 2. Evitar duplicados: Verificar si ya calificó este producto en este pedido
+            // 2. Control de Duplicados:
+            // Evita que un mismo usuario califique varias veces el mismo producto dentro de un mismo pedido.
             $existe = Calificacion::where('pedido_id', $request->pedido_id)
                                   ->where('producto_id', $request->producto_id)
                                   ->exists();
@@ -45,7 +52,8 @@ class CalificacionController extends Controller
                 return response()->json(['message' => 'Ya has calificado este producto.'], 400);
             }
 
-            // 3. Crear la calificación
+            // 3. Creación:
+            // Si pasa todas las validaciones, se guarda la reseña vinculada al usuario, pedido y producto.
             $calificacion = Calificacion::create([
                 'user_id'     => Auth::id(),
                 'pedido_id'   => $request->pedido_id,
@@ -60,6 +68,7 @@ class CalificacionController extends Controller
             ], 201);
 
         } catch (\Exception $e) {
+            // Captura cualquier error inesperado y devuelve el mensaje de error para depuración.
             return response()->json([
                 'message' => 'Error al guardar la calificación',
                 'error' => $e->getMessage()
@@ -68,12 +77,14 @@ class CalificacionController extends Controller
     }
 
     /**
-     * Obtener calificaciones de un producto específico (Para mostrar en la tienda)
+     * FUNCIÓN POR PRODUCTO:
+     * Recupera todas las reseñas de un producto para que otros clientes puedan leerlas.
      */
     public function porProducto($productoId): JsonResponse
     {
         $calificaciones = Calificacion::where('producto_id', $productoId)
-            ->with('usuario:id,name') // Solo traemos el nombre del usuario
+            // Usa Eager Loading para traer el nombre de quien comentó sin exponer datos privados.
+            ->with('usuario:id,name') 
             ->orderBy('created_at', 'desc')
             ->get();
 

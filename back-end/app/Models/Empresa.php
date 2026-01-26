@@ -10,6 +10,8 @@ class Empresa extends Model
 {
     use HasFactory;
 
+    protected $table = 'empresas';
+
     protected $fillable = [
         'user_id',
         'nombre',
@@ -21,10 +23,20 @@ class Empresa extends Model
         'foto_local',
     ];
 
-    // Esto hace que las URLs completas se incluyan siempre en el JSON
-    protected $appends = ['logo_url', 'foto_local_url'];
+    /**
+     * Campos que NO se deben ocultar en el JSON
+     */
+    protected $hidden = [];
 
-    // --- Relaciones ---
+    /**
+     * Accessors que se agregan automáticamente al JSON
+     */
+    protected $appends = [
+        'logo_url',
+        'foto_local_url',
+    ];
+
+    // ───────────── Relaciones ─────────────
 
     public function usuario()
     {
@@ -33,7 +45,7 @@ class Empresa extends Model
 
     public function productos()
     {
-        return $this->hasMany(Producto::class);
+        return $this->hasMany(Producto::class, 'empresa_id');
     }
 
     public function pedidos()
@@ -41,21 +53,23 @@ class Empresa extends Model
         return $this->hasMany(Pedido::class, 'empresa_id');
     }
 
-    // --- Accessors para React ---
+    // ───────────── Accessors (URLs públicas) ─────────────
 
-    /**
-     * Genera la URL completa para el logo
-     */
     public function getLogoUrlAttribute()
     {
-        return $this->logo ? asset('storage/' . $this->logo) : null;
+        if (!$this->logo) {
+            return null;
+        }
+
+        return asset('storage/' . $this->logo);
     }
 
-    /**
-     * Genera la URL completa para la foto del local
-     */
     public function getFotoLocalUrlAttribute()
     {
-        return $this->foto_local ? asset('storage/' . $this->foto_local) : null;
+        if (!$this->foto_local) {
+            return null;
+        }
+
+        return asset('storage/' . $this->foto_local);
     }
 }

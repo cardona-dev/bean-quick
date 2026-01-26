@@ -11,7 +11,9 @@ use Illuminate\Http\JsonResponse;
 class CarritoController extends Controller
 {
     /**
-     * Mostrar el carrito del usuario autenticado.
+     * FUNCIÓN INDEX:
+     * Obtiene el carrito del usuario. Si no existe, lo crea en el momento (firstOrCreate).
+     * Devuelve los productos con su respectiva empresa y la cantidad guardada en la tabla pivote.
      */
     public function index()
     {
@@ -19,10 +21,11 @@ class CarritoController extends Controller
         $carrito = Carrito::firstOrCreate(['user_id' => $user->id]);
 
         $productos = $carrito->productos()
-            ->with('empresa') // Carga la empresa
-            ->withPivot('cantidad')
+            ->with('empresa') // Carga la información de la tienda que vende el producto
+            ->withPivot('cantidad') // Trae la columna 'cantidad' de la tabla intermedia
             ->get()
             ->map(function ($producto) {
+                // Asegura que el precio sea tratado como un número decimal (float) en el JSON
                 $producto->precio = (float) $producto->precio;
                 return $producto;
             });
@@ -31,7 +34,9 @@ class CarritoController extends Controller
     }
 
     /**
-     * Agregar un producto al carrito.
+     * FUNCIÓN AGREGAR:
+     * Si el producto ya está en el carrito, suma la nueva cantidad a la existente.
+     * Si no está, lo vincula por primera vez usando attach().
      */
     public function agregar(Request $request, $productoId): JsonResponse
     {
@@ -45,21 +50,23 @@ class CarritoController extends Controller
         $carritoProducto = $carrito->productos()->where('producto_id', $productoId)->first();
     
         if ($carritoProducto) {
+            // Lógica de suma: cantidad actual en base de datos + cantidad nueva del request
             $nuevaCantidad = $carritoProducto->pivot->cantidad + $request->cantidad;
             $carrito->productos()->updateExistingPivot($productoId, ['cantidad' => $nuevaCantidad]);
         } else {
+            // Vinculación inicial
             $carrito->productos()->attach($productoId, ['cantidad' => $request->cantidad]);
         }
     
         return response()->json([
             'message' => 'Producto agregado al carrito correctamente.',
-            // CORRECCIÓN: Agregamos with('empresa')
             'productos' => $carrito->productos()->with(['empresa'])->withPivot('cantidad')->get()
         ]);
     }
 
     /**
-     * Actualizar cantidad de un producto.
+     * FUNCIÓN ACTUALIZAR:
+     * Modifica directamente la cantidad de un producto específico que ya está en el carrito.
      */
     public function actualizar(Request $request, $productoId): JsonResponse
     {
@@ -75,13 +82,13 @@ class CarritoController extends Controller
 
         return response()->json([
             'message' => 'Cantidad actualizada correctamente.',
-            // CORRECCIÓN: Agregamos with('empresa')
             'productos' => $carrito->productos()->with(['empresa'])->withPivot('cantidad')->get()
         ]);
     }
 
     /**
-     * Eliminar un producto del carrito.
+     * FUNCIÓN ELIMINAR:
+     * Quita un producto específico del carrito usando detach().
      */
     public function eliminar($productoId): JsonResponse
     {
@@ -93,20 +100,20 @@ class CarritoController extends Controller
 
         return response()->json([
             'message' => 'Producto eliminado del carrito.',
-            // CORRECCIÓN: Agregamos with('empresa')
             'productos' => $carrito->productos()->with(['empresa'])->withPivot('cantidad')->get()
         ]);
     }
 
     /**
-     * Vaciar completamente el carrito.
+     * FUNCIÓN VACIAR:
+     * Elimina todas las relaciones del carrito (lo deja limpio) sin borrar el carrito en sí.
      */
     public function vaciar(): JsonResponse
     {
         $carrito = Carrito::where('user_id', Auth::id())->first();
 
         if ($carrito) {
-            $carrito->productos()->detach();
+            $carrito->productos()->detach(); // Al no pasar ID, quita todos los productos vinculados
         }
 
         return response()->json([

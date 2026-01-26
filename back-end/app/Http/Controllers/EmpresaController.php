@@ -35,38 +35,38 @@ class EmpresaController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-    $request->validate([
-        'nombre'      => 'required|string|max:255',
-        'nit'         => 'required|string|unique:empresas,nit', // Verifica que el NIT sea único
-        'direccion'   => 'nullable|string|max:255',
-        'telefono'    => 'nullable|string|max:50',
-        'descripcion' => 'nullable|string',
-        'logo'        => 'nullable|image|max:2048',
-        'foto_local'  => 'nullable|image|max:4096',
-    ]);
+        $request->validate([
+            'nombre'      => 'required|string|max:255',
+            'nit'         => 'required|string|unique:empresas,nit', // Verifica que el NIT sea único
+            'direccion'   => 'nullable|string|max:255',
+            'telefono'    => 'nullable|string|max:50',
+            'descripcion' => 'nullable|string',
+            'logo'        => 'nullable|image|max:2048',
+            'foto_local'  => 'nullable|image|max:4096',
+        ]);
 
-    // 1. Usamos fill() para cargar todos los datos de texto excepto las imágenes
-    $empresa = new Empresa($request->except(['logo', 'foto_local']));
+        // 1. Usamos fill() para cargar todos los datos de texto excepto las imágenes
+        $empresa = new Empresa($request->except(['logo', 'foto_local']));
 
-    // 2. Forzamos el user_id (Si Auth::id() es null en Thunder, pon uno manual para probar)
-    $empresa->user_id = Auth::id() ?? 1; 
+        // 2. Forzamos el user_id (Si Auth::id() es null en Thunder, pon uno manual para probar)
+        $empresa->user_id = Auth::id() ?? 1; 
 
-    // 3. Procesamos los archivos (Aquí es donde se asignan las rutas)
-    if ($request->hasFile('logo')) {
-        $empresa->logo = $request->file('logo')->store('empresas/logos', 'public');
+        // 3. Procesamos los archivos (Aquí es donde se asignan las rutas)
+        if ($request->hasFile('logo')) {
+            $empresa->logo = $request->file('logo')->store('empresas/logos', 'public');
+        }
+
+        if ($request->hasFile('foto_local')) {
+            $empresa->foto_local = $request->file('foto_local')->store('empresas/locales', 'public');
+        }
+
+        $empresa->save();
+
+        return response()->json([
+            'message' => 'Empresa creada correctamente.',
+            'empresa' => $empresa // Aquí verás logo_url y foto_local_url gracias a tu modelo
+        ], 201);
     }
-
-    if ($request->hasFile('foto_local')) {
-        $empresa->foto_local = $request->file('foto_local')->store('empresas/locales', 'public');
-    }
-
-    $empresa->save();
-
-    return response()->json([
-        'message' => 'Empresa creada correctamente.',
-        'empresa' => $empresa // Aquí verás logo_url y foto_local_url gracias a tu modelo
-    ], 201);
-}
 
     /**
      * Actualizar datos de la empresa.
@@ -87,6 +87,7 @@ class EmpresaController extends Controller
 
         $data = $request->only(['nombre', 'direccion', 'telefono', 'descripcion']);
 
+        // Gestión del LOGO: Si sube uno nuevo, borramos el anterior para no llenar el servidor de basura
         if ($request->hasFile('logo')) {
             if ($empresa->logo) {
                 Storage::disk('public')->delete($empresa->logo);
@@ -94,6 +95,7 @@ class EmpresaController extends Controller
             $data['logo'] = $request->file('logo')->store('empresas/logos', 'public');
         }
 
+        // Gestión de FOTO LOCAL: Misma lógica de reemplazo
         if ($request->hasFile('foto_local')) {
             if ($empresa->foto_local) {
                 Storage::disk('public')->delete($empresa->foto_local);

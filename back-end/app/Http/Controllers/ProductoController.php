@@ -13,6 +13,7 @@ class ProductoController extends Controller
 {
     /**
      * Obtener la empresa del usuario autenticado.
+     * Método privado de apoyo para reutilizar lógica.
      */
     private function getEmpresaAutenticada()
     {
@@ -112,6 +113,7 @@ class ProductoController extends Controller
         $producto->fill($request->only(['nombre', 'descripcion', 'precio', 'categoria_id']));
 
         if ($request->hasFile('imagen')) {
+            // Eliminar imagen anterior para ahorrar espacio
             if ($producto->imagen) {
                 Storage::disk('public')->delete($producto->imagen);
             }
@@ -149,47 +151,46 @@ class ProductoController extends Controller
 
     /**
      * Obtener productos destacados para el HOME.
-     * Esta ruta es PÚBLICA (No debe pedir Token en api.php)
-     */public function destacados(): JsonResponse
-{
-    try {
-        // 1. Cargamos productos con solo lo mínimo. 
-        // IMPORTANTE: Verifica si en tu tabla Empresa la columna es 'nombre' o 'nombre_empresa'
-        $productos = Producto::select('id', 'nombre', 'precio', 'imagen', 'empresa_id')
-            ->with(['empresa:id,nombre,logo', 'calificaciones:id,producto_id,estrellas'])
-            ->get();
+     * Esta ruta calcula el promedio de estrellas y devuelve los 4 mejores.
+     */
+    public function destacados(): JsonResponse
+    {
+        try {
+            // 1. Carga masiva de productos con sus relaciones
+            $productos = Producto::select('id', 'nombre', 'precio', 'imagen', 'empresa_id')
+                ->with(['empresa:id,nombre,logo', 'calificaciones:id,producto_id,estrellas'])
+                ->get();
 
-        $destacados = $productos->map(function ($producto) {
-            // 2. Cálculo del promedio de estrellas
-            $promedio = $producto->calificaciones->avg('estrellas');
-            $producto->calificaciones_avg_estrellas = $promedio ? round($promedio, 1) : 0;
-            
-            // 3. GENERAR URL DEL LOGO DE LA EMPRESA
-            // Esto permite que el logo se vea en React
-            if ($producto->empresa) {
-                $producto->empresa->logo_url = $producto->empresa->logo 
-                    ? asset('storage/' . $producto->empresa->logo) 
-                    : asset('images/default-logo.png'); // Imagen por defecto si no hay logo
-            }
+            $destacados = $productos->map(function ($producto) {
+                // 2. Cálculo dinámico del promedio
+                $promedio = $producto->calificaciones->avg('estrellas');
+                $producto->calificaciones_avg_estrellas = $promedio ? round($promedio, 1) : 0;
+                
+                // 3. Generación de URL absoluta para el logo de la empresa
+                if ($producto->empresa) {
+                    $producto->empresa->logo_url = $producto->empresa->logo 
+                        ? asset('storage/' . $producto->empresa->logo) 
+                        : asset('images/default-logo.png'); 
+                }
 
-            // 4. Limpieza de datos pesados
-            unset($producto->calificaciones);
-            
-            return $producto;
-        })
-        // 5. Filtro, orden y cantidad
-        ->filter(fn($p) => $p->calificaciones_avg_estrellas > 0)
-        ->sortByDesc('calificaciones_avg_estrellas')
-        ->take(4) 
-        ->values();
+                // 4. Limpieza para enviar un JSON ligero
+                unset($producto->calificaciones);
+                
+                return $producto;
+            })
+            // 5. Filtramos solo los que tienen calificación y tomamos los 4 mejores
+            ->filter(fn($p) => $p->calificaciones_avg_estrellas > 0)
+            ->sortByDesc('calificaciones_avg_estrellas')
+            ->take(4) 
+            ->values();
 
-        return response()->json($destacados);
+            return response()->json($destacados);
 
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => 'Error al procesar destacados',
-            'details' => $e->getMessage()
-        ], 500);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al procesar destacados',
+                'details' => $e->getMessage()
+            ], 500);
+        }
     }
-}
 }

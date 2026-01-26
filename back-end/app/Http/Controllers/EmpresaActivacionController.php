@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use App\Models\User;
 use App\Models\Empresa;
 use App\Models\SolicitudEmpresa;
@@ -125,13 +127,12 @@ class EmpresaActivacionController extends Controller
                 'user' => $user
             ], 201);
             
-        // Cambia esto solo para la prueba:
-} catch (\Exception $e) {
-    DB::rollBack();
-    return response()->json([
-        'error_real' => $e->getMessage(), // Esto nos dirá qué falló exactamente
-        'linea' => $e->getLine()
-    ], 500);
-}
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'error_real' => $e->getMessage(), 
+                'linea' => $e->getLine()
+            ], 500);
+        }
     }
 }

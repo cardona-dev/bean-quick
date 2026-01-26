@@ -28,9 +28,14 @@ class SolicitudEmpresaController extends Controller
         ]);
 
         $data = $request->except(['logo', 'foto_local']);
+
+        // Validación de depuración para Thunder Client / Postman
         if (!$request->hasFile('logo')) {
-        return response()->json(['error' => 'Laravel no detecta el archivo logo. Revisa el Body en Thunder.'], 400);
-    }
+            return response()->json([
+                'error' => 'Laravel no detecta el archivo logo. Revisa el Body en Thunder.'
+            ], 400);
+        }
+
         // Guardar logo en carpeta temporal de solicitudes
         if ($request->hasFile('logo')) {
             $data['logo'] = $request->file('logo')->store('solicitudes/logos', 'public');
@@ -41,7 +46,7 @@ class SolicitudEmpresaController extends Controller
             $data['foto_local'] = $request->file('foto_local')->store('solicitudes/locales', 'public');
         }
 
-        // Se crea con estado 'pendiente' por defecto
+        // Se crea con estado 'pendiente' por defecto (definido en la migración o modelo)
         $solicitud = SolicitudEmpresa::create($data);
 
         return response()->json([

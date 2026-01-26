@@ -20,22 +20,27 @@ class Calificacion extends Model
         'comentario'
     ];
 
-    // Relación: Una calificación pertenece a un usuario
+    /**
+     * Relación: Una calificación pertenece a un usuario.
+     */
     public function usuario()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    // Relación: Una calificación pertenece a un producto
+    /**
+     * Relación: Una calificación pertenece a un producto.
+     */
     public function producto()
     {
         return $this->belongsTo(Producto::class);
     }
 
-    // Relación: Una calificación pertenece a un pedido
+    /**
+     * Relación: Una calificación pertenece a un pedido.
+     */
     public function pedido()
     {
         return $this->belongsTo(Pedido::class);
     }
-    
 }

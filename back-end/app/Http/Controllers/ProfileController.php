@@ -29,8 +29,11 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): JsonResponse
     {
         $user = $request->user();
+        
+        // El método fill() toma los datos ya validados del FormRequest
         $user->fill($request->validated());
 
+        // Si el usuario cambia su correo, marcamos que no está verificado
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
         }
@@ -49,6 +52,7 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): JsonResponse
     {
+        // Seguridad: Requiere la contraseña actual para confirmar la eliminación
         $request->validate([
             'password' => ['required', 'current_password'],
         ]);
@@ -56,6 +60,7 @@ class ProfileController extends Controller
         $user = $request->user();
 
         // En API con Sanctum, eliminamos los tokens antes de borrar al usuario
+        // para cerrar todas las sesiones activas inmediatamente.
         $user->tokens()->delete();
         $user->delete();
 
