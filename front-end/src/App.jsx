@@ -152,17 +152,46 @@ function App() {
     useEffect(() => {
         fetchCarrito();
     }, [fetchCarrito]);
+const agregarAlCarrito = async (producto, cantidad = 1) => {
+    const token = localStorage.getItem('AUTH_TOKEN');
+    if (!token) { 
+        alert("Debes iniciar sesión"); 
+        return; 
+    }
 
-    const agregarAlCarrito = async (producto, cantidad = 1) => {
-        const token = localStorage.getItem('AUTH_TOKEN');
-        if (!token) { alert("Debes iniciar sesión"); return; }
-        try {
-            const res = await axios.post(`http://127.0.0.1:8000/api/cliente/carrito/agregar/${producto.id}`,
-                { cantidad }, { headers: { Authorization: `Bearer ${token}` } }
-            );
-            if (res.data?.productos) setCarrito(res.data.productos);
-        } catch (error) { console.error("Error al agregar", error); }
-    };
+    // 1. BUSCAR SI YA ESTÁ EN EL CARRITO LOCAL
+    const productoEnCarrito = carrito.find(item => item.id === producto.id);
+    
+    // Obtenemos la cantidad que ya existe (manejando pivot o cantidad directa)
+    const cantidadActual = productoEnCarrito 
+        ? (productoEnCarrito.pivot?.cantidad ?? productoEnCarrito.cantidad ?? 0) 
+        : 0;
+
+    // 2. VALIDACIÓN DE STOCK LOCAL
+    // Si la (cantidad que ya tengo + la que quiero agregar) supera el stock, frenamos.
+    if (cantidadActual + cantidad > producto.stock) {
+        alert(`¡Ups! No puedes agregar más. El stock disponible es de ${producto.stock} unidades y ya tienes ${cantidadActual} en tu carrito.`);
+        return;
+    }
+
+    try {
+        const res = await axios.post(
+            `http://127.0.0.1:8000/api/cliente/carrito/agregar/${producto.id}`,
+            { cantidad }, 
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        if (res.data?.productos) {
+            setCarrito(res.data.productos);
+        }
+    } catch (error) {
+        console.error("Error al agregar", error);
+        // Opcional: Si el servidor responde con error de stock, mostrarlo
+        if (error.response?.status === 422) {
+            alert(error.response.data.message);
+        }
+    }
+};
 
     const actualizarCantidad = async (productoId, nuevaCantidad) => {
     if (nuevaCantidad < 1) return eliminarDelCarrito(productoId);
@@ -268,6 +297,7 @@ const AppLayout = ({ carrito, setCarrito, agregarAlCarrito, confirmarPedido, act
                         {/* RUTAS EMPRESA */}
                         <Route path="/empresa/panel" element={<DashboardEmpresa />} />
                         <Route path="/empresa/productos/nuevo" element={<AgregarProducto />} />
+                        <Route path="/empresa/productos/editar/:id" element={<AgregarProducto />} />
                         <Route path="/empresa/productos" element={<MisProductos />} />
                         <Route path="/empresa/pedidos" element={<GestionPedidosEmpresa />} />
 

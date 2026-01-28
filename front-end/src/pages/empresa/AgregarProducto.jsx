@@ -9,13 +9,13 @@ const AgregarProducto = () => {
     
     const [categorias, setCategorias] = useState([]);
     const [loading, setLoading] = useState(false);
-    // Nuevo estado para la vista previa de la imagen
     const [preview, setPreview] = useState(null);
     
     const [formData, setFormData] = useState({
         nombre: '',
         descripcion: '',
         precio: '',
+        stock: '', // <--- NUEVO: Estado para el stock
         categoria_id: '',
         imagen: null
     });
@@ -43,11 +43,11 @@ const AgregarProducto = () => {
                         nombre: response.data.nombre || '',
                         descripcion: response.data.descripcion || '',
                         precio: response.data.precio || '',
+                        stock: response.data.stock !== null ? response.data.stock : 0, // <--- NUEVO: Cargar stock existente
                         categoria_id: response.data.categoria_id || '',
                         imagen: null 
                     });
 
-                    // Si el producto ya tiene imagen, la ponemos como vista previa inicial
                     if (response.data.imagen_url) {
                         setPreview(response.data.imagen_url);
                     }
@@ -70,7 +70,6 @@ const AgregarProducto = () => {
         const file = e.target.files[0];
         if (file) {
             setFormData({ ...formData, imagen: file });
-            // Generamos la URL temporal para la vista previa
             setPreview(URL.createObjectURL(file));
         }
     };
@@ -83,6 +82,7 @@ const AgregarProducto = () => {
         data.append('nombre', formData.nombre);
         data.append('descripcion', formData.descripcion);
         data.append('precio', formData.precio);
+        data.append('stock', formData.stock); // <--- NUEVO: Enviar stock al Backend
         data.append('categoria_id', formData.categoria_id);
         
         if (formData.imagen) {
@@ -122,7 +122,6 @@ const AgregarProducto = () => {
             <div style={styles.card}>
                 <h2 style={styles.title}>{isEdit ? 'Editar Producto' : 'Nuevo Producto'}</h2>
                 
-                {/* SECCIÓN DE VISTA PREVIA DE IMAGEN */}
                 <div style={styles.previewContainer}>
                     {preview ? (
                         <img src={preview} alt="Preview" style={styles.previewImage} />
@@ -161,19 +160,31 @@ const AgregarProducto = () => {
                             style={{...styles.input, flex: 1}} 
                         />
                         
-                        <select 
-                            name="categoria_id" 
-                            value={formData.categoria_id}
+                        {/* NUEVO: Input de Stock al lado del precio */}
+                        <input 
+                            type="number" 
+                            name="stock" 
+                            value={formData.stock}
+                            placeholder="Stock (Cant.)" 
                             onChange={handleChange} 
                             required 
-                            style={{...styles.input, flex: 1}}
-                        >
-                            <option value="">Categoría...</option>
-                            {categorias.map(cat => (
-                                <option key={cat.id} value={cat.id}>{cat.nombre}</option>
-                            ))}
-                        </select>
+                            min="0"
+                            style={{...styles.input, flex: 1}} 
+                        />
                     </div>
+
+                    <select 
+                        name="categoria_id" 
+                        value={formData.categoria_id}
+                        onChange={handleChange} 
+                        required 
+                        style={styles.input}
+                    >
+                        <option value="">Categoría...</option>
+                        {categorias.map(cat => (
+                            <option key={cat.id} value={cat.id}>{cat.nombre}</option>
+                        ))}
+                    </select>
 
                     <label style={styles.fileLabel}>
                         📷 {isEdit ? 'Cambiar foto (opcional)' : 'Subir foto del producto'}
@@ -189,7 +200,6 @@ const AgregarProducto = () => {
         </div>
     );
 };
-
 const styles = {
     container: { display: 'flex', justifyContent: 'center', padding: '40px', background: '#f8f9fa', minHeight: '100vh' },
     card: { background: 'white', padding: '30px', borderRadius: '15px', boxShadow: '0 10px 25px rgba(0,0,0,0.05)', width: '100%', maxWidth: '500px' },

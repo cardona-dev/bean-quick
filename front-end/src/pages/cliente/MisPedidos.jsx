@@ -37,17 +37,23 @@ const MisPedidos = () => {
         fetchPedidos();
     }, []);
 
+    // --- NUEVA LÓGICA DE CANCELACIÓN (INTEGRADA) ---
     const cancelarPedido = async (id) => {
-        if (!window.confirm("¿Estás seguro de que deseas cancelar este pedido?")) return;
+        if (!window.confirm("¿Estás seguro de que deseas cancelar este pedido? El stock será devuelto a la tienda.")) return;
+        
         const token = localStorage.getItem('AUTH_TOKEN');
         try {
-            await axios.post(`http://127.0.0.1:8000/api/cliente/pedidos/${id}/cancelar`, {}, {
+            const res = await axios.post(`http://127.0.0.1:8000/api/cliente/pedidos/${id}/cancelar`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
+
+            // Actualizamos localmente el estado del pedido
             setPedidos(pedidos.map(p => p.id === id ? { ...p, estado: 'Cancelado' } : p));
-            alert("Pedido cancelado con éxito.");
+            
+            // Mostramos el mensaje de éxito que viene del backend (restauración de stock)
+            alert(res.data.message || "Pedido cancelado con éxito.");
         } catch (error) {
-            alert(error.response?.data?.message || "No se pudo cancelar.");
+            alert(error.response?.data?.message || "No se pudo cancelar el pedido.");
         }
     };
 
@@ -79,7 +85,6 @@ const MisPedidos = () => {
             alert("¡Gracias por tu reseña! ⭐");
             setShowModal(false);
 
-            // Actualizamos localmente para que el botón cambie a "Calificado" de inmediato
             const nuevosPedidos = pedidos.map(p => {
                 if (p.id === calificando.pedido_id) {
                     const nuevosProds = p.productos.map(prod => 
@@ -177,7 +182,6 @@ const MisPedidos = () => {
                                                 </div>
                                             </div>
                                             
-                                            {/* CAMBIO: Lógica del botón de calificar */}
                                             {pedido.estado.toLowerCase() === 'entregado' && (
                                                 prod.ya_calificado ? (
                                                     <div style={styles.alreadyRated}>
@@ -266,10 +270,8 @@ const styles = {
     prodText: { display: 'flex', flexDirection: 'column' },
     prodName: { fontSize: '14px', fontWeight: '500' },
     prodQty: { fontSize: '12px', color: '#888' },
-
     rateBtn: { background: '#f1c40f', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '20px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' },
     alreadyRated: { color: '#27ae60', fontSize: '13px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' },
-    
     modalOverlay: { position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.6)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 },
     modal: { background: 'white', padding: '25px', borderRadius: '20px', width: '90%', maxWidth: '400px', textAlign: 'center' },
     starsRow: { display: 'flex', justifyContent: 'center', gap: '10px', margin: '20px 0', cursor: 'pointer' },

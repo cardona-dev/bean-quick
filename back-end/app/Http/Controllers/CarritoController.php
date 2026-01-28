@@ -37,54 +37,70 @@ class CarritoController extends Controller
      * FUNCIÓN AGREGAR:
      * Si el producto ya está en el carrito, suma la nueva cantidad a la existente.
      * Si no está, lo vincula por primera vez usando attach().
-     */
-    public function agregar(Request $request, $productoId): JsonResponse
-    {
-        $request->validate([
-            'cantidad' => 'required|integer|min:1'
-        ]);
+ */
+public function agregar(Request $request, $productoId): JsonResponse
+{
+    $request->validate([
+        'cantidad' => 'required|integer|min:1'
+    ]);
+
+    $user = Auth::user();
+    $producto = Producto::findOrFail($productoId); // Buscamos el producto real
+    $carrito = Carrito::firstOrCreate(['user_id' => $user->id]);
     
-        $user = Auth::user();
-        $carrito = Carrito::firstOrCreate(['user_id' => $user->id]);
-        
-        $carritoProducto = $carrito->productos()->where('producto_id', $productoId)->first();
+    $carritoProducto = $carrito->productos()->where('producto_id', $productoId)->first();
     
-        if ($carritoProducto) {
-            // Lógica de suma: cantidad actual en base de datos + cantidad nueva del request
-            $nuevaCantidad = $carritoProducto->pivot->cantidad + $request->cantidad;
-            $carrito->productos()->updateExistingPivot($productoId, ['cantidad' => $nuevaCantidad]);
-        } else {
-            // Vinculación inicial
-            $carrito->productos()->attach($productoId, ['cantidad' => $request->cantidad]);
-        }
-    
+    // Calculamos cuánto quiere tener el usuario en total
+    $cantidadActualEnCarrito = $carritoProducto ? $carritoProducto->pivot->cantidad : 0;
+    $totalDeseado = $cantidadActualEnCarrito + $request->cantidad;
+
+    // VALIDACIÓN CRÍTICA: ¿Supera el stock de la base de datos?
+    if ($totalDeseado > $producto->stock) {
         return response()->json([
-            'message' => 'Producto agregado al carrito correctamente.',
-            'productos' => $carrito->productos()->with(['empresa'])->withPivot('cantidad')->get()
+            'message' => "No puedes agregar más. Stock disponible: {$producto->stock}. Ya tienes {$cantidadActualEnCarrito} en el carrito."
+        ], 422); // Error de validación
+    }
+
+    if ($carritoProducto) {
+        $carrito->productos()->updateExistingPivot($productoId, ['cantidad' => $totalDeseado]);
+    } else {
+        $carrito->productos()->attach($productoId, ['cantidad' => $request->cantidad]);
+    }
+
+    return response()->json([
+        'message' => 'Producto agregado al carrito correctamente.',
+        'productos' => $carrito->productos()->with(['empresa'])->withPivot('cantidad')->get()
+    ]);
+}
+
+/**
+ * FUNCIÓN ACTUALIZAR reforzada (para cuando mueven el + o - en el carrito)
+ */
+public function actualizar(Request $request, $productoId): JsonResponse
+{
+    $request->validate(['cantidad' => 'required|integer|min:1']);
+    
+    $producto = Producto::findOrFail($productoId);
+    $carrito = Carrito::where('user_id', Auth::id())->first();
+
+    // VALIDACIÓN: No permitir subir más del stock
+    if ($request->cantidad > $producto->stock) {
+        return response()->json([
+            'message' => "Solo hay {$producto->stock} unidades disponibles."
+        ], 422);
+    }
+
+    if ($carrito) {
+        $carrito->productos()->updateExistingPivot($productoId, [
+            'cantidad' => $request->cantidad,
         ]);
     }
 
-    /**
-     * FUNCIÓN ACTUALIZAR:
-     * Modifica directamente la cantidad de un producto específico que ya está en el carrito.
-     */
-    public function actualizar(Request $request, $productoId): JsonResponse
-    {
-        $request->validate(['cantidad' => 'required|integer|min:1']);
-
-        $carrito = Carrito::where('user_id', Auth::id())->first();
-
-        if ($carrito) {
-            $carrito->productos()->updateExistingPivot($productoId, [
-                'cantidad' => $request->cantidad,
-            ]);
-        }
-
-        return response()->json([
-            'message' => 'Cantidad actualizada correctamente.',
-            'productos' => $carrito->productos()->with(['empresa'])->withPivot('cantidad')->get()
-        ]);
-    }
+    return response()->json([
+        'message' => 'Cantidad actualizada correctamente.',
+        'productos' => $carrito->productos()->with(['empresa'])->withPivot('cantidad')->get()
+    ]);
+}
 
     /**
      * FUNCIÓN ELIMINAR:

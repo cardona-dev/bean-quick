@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Calificacion;
+
 class Producto extends Model
 {
     use HasFactory;
@@ -15,10 +16,10 @@ class Producto extends Model
         'nombre',
         'descripcion',
         'precio',
+        'stock', // <--- Ya está listo aquí
         'imagen',
     ];
 
-    // Esto añade automáticamente la URL de la imagen al JSON enviado a React
     protected $appends = ['imagen_url'];
 
     /**
@@ -26,45 +27,52 @@ class Producto extends Model
      */
     protected $casts = [
         'precio' => 'float',
+        'stock' => 'integer', // <--- Agregamos este para que React no reciba "10" sino 10
     ];
+
+    // --- Métodos de Ayuda (Helpers) ---
+
+    /**
+     * Verifica si hay unidades disponibles
+     */
+    public function estaDisponible(): bool
+    {
+        return $this->stock > 0;
+    }
 
     // --- Relaciones ---
 
-    /**
-     * Relación: un producto puede estar en muchos carritos
-     */
     public function carritos()
     {
         return $this->belongsToMany(Carrito::class, 'carrito_productos')
                     ->withPivot('cantidad')
                     ->withTimestamps();
     }
-public function calificaciones()
-{
-    // Esto le dice a Laravel que un producto tiene muchas calificaciones
-    return $this->hasMany(Calificacion::class);
-}
-    /**
-     * Relación: un producto pertenece a una empresa
-     */public function empresa()
-{
-    return $this->belongsTo(Empresa::class, 'empresa_id');
-}
-    public function categoria() {
-    return $this->belongsTo(Categoria::class);
+
+    public function calificaciones()
+    {
+        return $this->hasMany(Calificacion::class);
     }
+
+    public function empresa()
+    {
+        return $this->belongsTo(Empresa::class, 'empresa_id');
+    }
+
+    public function categoria() 
+    {
+        return $this->belongsTo(Categoria::class);
+    }
+
+    public function pedidos()
+    {
+        return $this->belongsToMany(Pedido::class, 'pedido_productos');
+    }
+
     // --- Accessors para React ---
 
-    /**
-     * Genera la URL completa para la imagen del producto
-     */
     public function getImagenUrlAttribute()
     {
         return $this->imagen ? asset('storage/' . $this->imagen) : asset('images/placeholder-producto.png');
     }
-    public function pedidos()
-{
-    // Si tu tabla pivote se llama 'pedido_producto'
-    return $this->belongsToMany(Pedido::class, 'pedido_productos');
-}
 }

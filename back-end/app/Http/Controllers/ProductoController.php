@@ -11,18 +11,11 @@ use Illuminate\Http\JsonResponse;
 
 class ProductoController extends Controller
 {
-    /**
-     * Obtener la empresa del usuario autenticado.
-     * Método privado de apoyo para reutilizar lógica.
-     */
     private function getEmpresaAutenticada()
     {
         return Empresa::where('user_id', Auth::id())->first();
     }
 
-    /**
-     * Listar productos de la empresa autenticada (Panel Administrativo).
-     */
     public function index(): JsonResponse
     {
         $empresa = $this->getEmpresaAutenticada();
@@ -38,9 +31,6 @@ class ProductoController extends Controller
         return response()->json($productos);
     }
 
-    /**
-     * Mostrar un producto específico.
-     */
     public function show($id): JsonResponse
     {
         $empresa = $this->getEmpresaAutenticada();
@@ -57,13 +47,14 @@ class ProductoController extends Controller
     }
 
     /**
-     * Guardar un nuevo producto.
+     * Guardar un nuevo producto con STOCK.
      */
     public function store(Request $request)
     {
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'precio' => 'required|numeric',
+            'precio' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0', // <--- Validación de stock
             'categoria_id' => 'required|exists:categorias,id',
             'descripcion' => 'nullable|string',
             'imagen' => 'nullable|image|max:2048',
@@ -75,6 +66,7 @@ class ProductoController extends Controller
         $producto->nombre = $request->nombre;
         $producto->descripcion = $request->descripcion;
         $producto->precio = $request->precio;
+        $producto->stock = $request->stock; // <--- Guardamos el stock
         $producto->empresa_id = $empresa->id;
         $producto->categoria_id = $request->categoria_id;
 
@@ -91,7 +83,7 @@ class ProductoController extends Controller
     }
 
     /**
-     * Actualizar un producto existente.
+     * Actualizar producto incluyendo STOCK.
      */
     public function update(Request $request, $id): JsonResponse
     {
@@ -106,14 +98,15 @@ class ProductoController extends Controller
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'precio' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0', // <--- Validación en update
             'categoria_id' => 'required|exists:categorias,id',
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
         ]);
 
-        $producto->fill($request->only(['nombre', 'descripcion', 'precio', 'categoria_id']));
+        // Añadimos 'stock' al fill para actualización masiva
+        $producto->fill($request->only(['nombre', 'descripcion', 'precio', 'categoria_id', 'stock']));
 
         if ($request->hasFile('imagen')) {
-            // Eliminar imagen anterior para ahorrar espacio
             if ($producto->imagen) {
                 Storage::disk('public')->delete($producto->imagen);
             }
@@ -128,9 +121,6 @@ class ProductoController extends Controller
         ]);
     }
 
-    /**
-     * Eliminar un producto.
-     */
     public function destroy($id): JsonResponse
     {
         $empresa = $this->getEmpresaAutenticada();
@@ -150,35 +140,29 @@ class ProductoController extends Controller
     }
 
     /**
-     * Obtener productos destacados para el HOME.
-     * Esta ruta calcula el promedio de estrellas y devuelve los 4 mejores.
+     * Obtener productos destacados (Solo si tienen STOCK).
      */
     public function destacados(): JsonResponse
     {
         try {
-            // 1. Carga masiva de productos con sus relaciones
-            $productos = Producto::select('id', 'nombre', 'precio', 'imagen', 'empresa_id')
+            $productos = Producto::select('id', 'nombre', 'precio', 'imagen', 'empresa_id', 'stock')
+                ->where('stock', '>', 0) // <--- Solo mostramos lo que hay disponible
                 ->with(['empresa:id,nombre,logo', 'calificaciones:id,producto_id,estrellas'])
                 ->get();
 
             $destacados = $productos->map(function ($producto) {
-                // 2. Cálculo dinámico del promedio
                 $promedio = $producto->calificaciones->avg('estrellas');
                 $producto->calificaciones_avg_estrellas = $promedio ? round($promedio, 1) : 0;
                 
-                // 3. Generación de URL absoluta para el logo de la empresa
                 if ($producto->empresa) {
                     $producto->empresa->logo_url = $producto->empresa->logo 
                         ? asset('storage/' . $producto->empresa->logo) 
                         : asset('images/default-logo.png'); 
                 }
 
-                // 4. Limpieza para enviar un JSON ligero
                 unset($producto->calificaciones);
-                
                 return $producto;
             })
-            // 5. Filtramos solo los que tienen calificación y tomamos los 4 mejores
             ->filter(fn($p) => $p->calificaciones_avg_estrellas > 0)
             ->sortByDesc('calificaciones_avg_estrellas')
             ->take(4) 
