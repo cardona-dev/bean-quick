@@ -1,3 +1,4 @@
+import './index.css';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import axios from 'axios';

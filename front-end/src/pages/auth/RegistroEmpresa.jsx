@@ -1,6 +1,7 @@
 // ========================================
 // IMPORTACIONES - Traemos las herramientas que necesitamos
 // ========================================
+import GranosCafe from '../img/GranosCafe.png'; // ← AGREGAR ESTO AL INICIO CON LOS OTROS IMPORTS
 
 // React y useState: nos permite crear componentes y manejar datos que cambian
 import React, { useState } from 'react';
@@ -568,33 +569,35 @@ const RegistroEmpresa = () => {
   );
 };
 
+
 // ========================================
 // ESTILOS - Toda la apariencia visual
 // ========================================
 const styles = {
-  // Contenedor de toda la página
   page: {
-    minHeight: '100vh', // Altura mínima de toda la pantalla
-    background: 'linear-gradient(135deg, #FBF8F3 0%, #F5EBE0 50%, #EFE1D1 100%)', // Degradado beige
-    padding: '40px 20px', // Espacio alrededor
-    fontFamily: "'Inter', -apple-system, sans-serif", // Tipo de letra
+    minHeight: '100vh',
+    backgroundImage: `url(${GranosCafe})`, // ← IMAGEN DE FONDO
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundAttachment: 'fixed',
+    padding: '40px 20px',
+    fontFamily: "'Inter', -apple-system, sans-serif",
     position: 'relative',
-    overflow: 'hidden' // Ocultar lo que salga de los bordes
+    overflow: 'hidden'
   },
   
-  // Círculo decorativo 1 (arriba-derecha)
   bgCircle1: {
     position: 'absolute',
     width: '600px',
     height: '600px',
-    borderRadius: '50%', // Hacerlo circular
+    borderRadius: '50%',
     background: 'radial-gradient(circle, rgba(139, 94, 60, 0.08) 0%, transparent 70%)',
     top: '-200px',
     right: '-200px',
-    pointerEvents: 'none' // No interfiere con clics
+    pointerEvents: 'none'
   },
   
-  // Círculo decorativo 2 (abajo-izquierda)
   bgCircle2: {
     position: 'absolute',
     width: '400px',
@@ -606,91 +609,80 @@ const styles = {
     pointerEvents: 'none'
   },
   
-  // Contenedor principal
   container: {
-    maxWidth: '1000px', // Ancho máximo
-    margin: '0 auto', // Centrado horizontal
+    maxWidth: '1000px',
+    margin: '0 auto',
     position: 'relative',
-    zIndex: 1 // Aparecer encima de los círculos
+    zIndex: 1
   },
   
-  // Encabezado blanco con branding
   header: {
     backgroundColor: '#FFFFFF',
     borderRadius: '20px',
     padding: '40px',
     marginBottom: '30px',
-    boxShadow: '0 10px 30px rgba(62, 39, 35, 0.08)' // Sombra suave
+    boxShadow: '0 10px 30px rgba(62, 39, 35, 0.08)'
   },
   
-  // Sección de logo + título
   brandSection: {
     display: 'flex',
-    alignItems: 'center', // Alinear verticalmente
-    gap: '25px', // Espacio entre elementos
+    alignItems: 'center',
+    gap: '25px',
     marginBottom: '30px'
   },
   
-  // Círculo que contiene el logo de café
   logoCircle: {
     width: '70px',
     height: '70px',
     borderRadius: '50%',
-    background: 'linear-gradient(165deg, #6F4E37 0%, #8B5E3C 100%)', // Degradado marrón
+    background: 'linear-gradient(165deg, #6F4E37 0%, #8B5E3C 100%)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    flexShrink: 0 // No se encoge
+    flexShrink: 0
   },
   
-  // Ícono de café dentro del círculo
   logoIcon: {
     fontSize: '2rem',
     color: '#FFFFFF'
   },
   
-  // Título principal "Únete a Bean Quick Business"
   brandTitle: {
-    fontSize: '2rem',
+    fontSize: '2.2rem', // ← AUMENTADO de 2rem
     fontWeight: '800',
     color: '#3E2723',
     marginBottom: '5px',
     letterSpacing: '-0.5px'
   },
   
-  // Subtítulo "Registra tu cafetería..."
   brandSubtitle: {
-    fontSize: '1.05rem',
+    fontSize: '1.15rem', // ← AUMENTADO de 1.05rem
     color: '#8D6E63'
   },
   
-  // Fila de badges de beneficios
   benefitsRow: {
     display: 'flex',
     gap: '15px',
-    flexWrap: 'wrap' // Se adapta a pantallas pequeñas
+    flexWrap: 'wrap'
   },
   
-  // Cada badge individual (pastilla con beneficio)
   benefitBadge: {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    backgroundColor: '#F5EBE0', // Beige claro
+    backgroundColor: '#F5EBE0',
     padding: '10px 18px',
-    borderRadius: '50px', // Muy redondeado
-    fontSize: '0.9rem',
+    borderRadius: '50px',
+    fontSize: '1rem', // ← AUMENTADO de 0.9rem
     color: '#5D4037',
     fontWeight: '600'
   },
   
-  // Ícono de check en el badge
   badgeIcon: {
     color: '#8B5E3C',
-    fontSize: '1rem'
+    fontSize: '1.1rem' // ← AUMENTADO de 1rem
   },
   
-  // Tarjeta blanca del formulario
   formCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: '20px',
@@ -698,101 +690,88 @@ const styles = {
     boxShadow: '0 10px 30px rgba(62, 39, 35, 0.08)'
   },
   
-  // Caja de error general
   errorBox: {
-    backgroundColor: '#FEF2F2', // Rojo muy suave
+    backgroundColor: '#FEF2F2',
     border: '1px solid #FCA5A5',
-    color: '#B91C1C', // Rojo oscuro
+    color: '#B91C1C',
     padding: '14px 18px',
     borderRadius: '12px',
     marginBottom: '30px',
     display: 'flex',
     alignItems: 'center',
     gap: '10px',
-    fontSize: '0.9rem',
+    fontSize: '1rem', // ← AUMENTADO de 0.9rem
     fontWeight: '500'
   },
   
-  // Ícono de advertencia en error
   errorIcon: {
-    fontSize: '1.1rem'
+    fontSize: '1.2rem' // ← AUMENTADO de 1.1rem
   },
   
-  // Contenedor del formulario
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '25px' // Espacio entre campos
+    gap: '25px'
   },
   
-  // Fila de campos (grid adaptable)
   row: {
     display: 'grid',
-    // Se adapta automáticamente: mínimo 250px por columna, máximo 1 fracción
     gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
     gap: '25px'
   },
   
-  // Grupo de input (label + input + error)
   inputGroup: {
     display: 'flex',
     flexDirection: 'column',
     gap: '8px'
   },
   
-  // Etiqueta del campo
   label: {
-    fontSize: '0.9rem',
+    fontSize: '1rem', // ← AUMENTADO de 0.9rem
     fontWeight: '600',
     color: '#5D4037',
     letterSpacing: '0.3px'
   },
   
-  // Caja que contiene el input
   inputBox: {
-    position: 'relative', // Para posicionar el ícono
+    position: 'relative',
     display: 'flex',
     alignItems: 'center',
-    backgroundColor: '#FAFAFA', // Gris muy claro
+    backgroundColor: '#FAFAFA',
     borderRadius: '14px',
     border: '2px solid #E8E0D8',
-    transition: 'all 0.3s' // Animación suave
+    transition: 'all 0.3s'
   },
   
-  // Estilos cuando el input está enfocado
   inputBoxFocused: {
     backgroundColor: '#FFFFFF',
-    borderColor: '#8B5E3C', // Borde marrón
-    boxShadow: '0 0 0 4px rgba(139, 94, 60, 0.1)' // Sombra alrededor
+    borderColor: '#8B5E3C',
+    boxShadow: '0 0 0 4px rgba(139, 94, 60, 0.1)'
   },
   
-  // Estilos cuando hay error
   inputBoxError: {
-    borderColor: '#FCA5A5', // Borde rojo
-    backgroundColor: '#FEF2F2' // Fondo rojo suave
+    borderColor: '#FCA5A5',
+    backgroundColor: '#FEF2F2'
   },
   
-  // Ícono dentro del input
   inputIcon: {
     position: 'absolute',
     left: '18px',
     color: '#A0816C',
-    fontSize: '1.05rem'
+    fontSize: '1.15rem' // ← AUMENTADO de 1.05rem
   },
   
-  // Campo de texto
   input: {
     width: '100%',
-    padding: '16px 18px 16px 52px', // Más padding izquierdo para el ícono
+    padding: '16px 18px 16px 52px',
     border: 'none',
     backgroundColor: 'transparent',
-    fontSize: '1rem',
+    fontSize: '1.05rem', // ← AUMENTADO de 1rem
     color: '#3E2723',
     outline: 'none',
     fontWeight: '500'
   },
   
-  // Caja del textarea (descripción)
   textareaBox: {
     position: 'relative',
     backgroundColor: '#FAFAFA',
@@ -801,49 +780,43 @@ const styles = {
     transition: 'all 0.3s'
   },
   
-  // Ícono del textarea
   textareaIcon: {
     position: 'absolute',
     left: '18px',
-    top: '18px', // Posición vertical
+    top: '18px',
     color: '#A0816C',
-    fontSize: '1.05rem'
+    fontSize: '1.15rem' // ← AUMENTADO de 1.05rem
   },
   
-  // Campo de texto largo (textarea)
   textarea: {
     width: '100%',
     padding: '16px 18px 16px 52px',
     border: 'none',
     backgroundColor: 'transparent',
-    fontSize: '1rem',
+    fontSize: '1.05rem', // ← AUMENTADO de 1rem
     color: '#3E2723',
     outline: 'none',
     fontWeight: '500',
-    resize: 'vertical', // Permite redimensionar verticalmente
-    fontFamily: 'inherit' // Usa la misma fuente
+    resize: 'vertical',
+    fontFamily: 'inherit'
   },
   
-  // Contenedor de subida de archivos
   fileUploadBox: {
     position: 'relative'
   },
   
-  // Input de archivo (oculto)
   fileInput: {
-    display: 'none' // Invisible, usamos el label como botón
+    display: 'none'
   },
   
-  // Label que actúa como botón de carga
   fileLabel: {
     display: 'block',
-    cursor: 'pointer' // Manita al pasar el mouse
+    cursor: 'pointer'
   },
   
-  // Área de carga (cuando no hay imagen)
   uploadPlaceholder: {
     backgroundColor: '#FAFAFA',
-    border: '2px dashed #E8E0D8', // Borde punteado
+    border: '2px dashed #E8E0D8',
     borderRadius: '14px',
     padding: '30px 20px',
     textAlign: 'center',
@@ -854,75 +827,67 @@ const styles = {
     }
   },
   
-  // Ícono de imagen en el área de carga
   uploadIcon: {
-    fontSize: '2.5rem',
+    fontSize: '2.8rem', // ← AUMENTADO de 2.5rem
     color: '#A0816C',
     marginBottom: '10px',
     display: 'block',
-    margin: '0 auto 10px' // Centrado
+    margin: '0 auto 10px'
   },
   
-  // Texto "Subir logo/foto"
   uploadText: {
     display: 'block',
-    fontSize: '0.95rem',
+    fontSize: '1.05rem', // ← AUMENTADO de 0.95rem
     fontWeight: '600',
     color: '#5D4037',
     marginBottom: '5px'
   },
   
-  // Texto de ayuda "PNG, JPG..."
   uploadHint: {
     display: 'block',
-    fontSize: '0.8rem',
+    fontSize: '0.9rem', // ← AUMENTADO de 0.8rem
     color: '#8D6E63'
   },
   
-  // Contenedor de vista previa de imagen
   previewContainer: {
     position: 'relative',
     borderRadius: '14px',
-    overflow: 'hidden', // Ocultar bordes que sobresalgan
+    overflow: 'hidden',
     backgroundColor: '#FAFAFA',
     border: '2px solid #E8E0D8'
   },
   
-  // Imagen de vista previa
   previewImage: {
     width: '100%',
     height: '150px',
-    objectFit: 'cover', // Recorta para ajustar sin deformar
+    objectFit: 'cover',
     display: 'block'
   },
   
-  // Texto "Cambiar imagen" sobre la vista previa
   changeText: {
     display: 'block',
     padding: '10px',
     textAlign: 'center',
-    fontSize: '0.85rem',
+    fontSize: '0.95rem', // ← AUMENTADO de 0.85rem
     fontWeight: '600',
     color: '#8B5E3C',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)' // Blanco semi-transparente
+    backgroundColor: 'rgba(255, 255, 255, 0.9)'
   },
   
-  // Mensaje de error específico de campo
   errorText: {
-    color: '#B91C1C', // Rojo
-    fontSize: '0.8rem',
+    color: '#B91C1C',
+    fontSize: '0.85rem', // ← AUMENTADO de 0.8rem
     marginLeft: '5px',
     fontWeight: '500'
   },
   
-  // Botón de envío
   submitBtn: {
-    backgroundColor: '#8B5E3C', // Marrón
+    backgroundColor: '#8B5E3C',
     color: '#FFFFFF',
     padding: '18px',
     border: 'none',
     borderRadius: '14px',
-    fontSize: '1.05rem',
+    fontSize: '1.1rem', // ← AUMENTADO de 1.05rem
     fontWeight: '700',
     cursor: 'pointer',
     display: 'flex',
@@ -934,38 +899,33 @@ const styles = {
     marginTop: '15px'
   },
   
-  // Botón deshabilitado (cuando está cargando)
   submitBtnDisabled: {
-    backgroundColor: '#A0816C', // Marrón más claro
+    backgroundColor: '#A0816C',
     cursor: 'not-allowed',
     boxShadow: '0 8px 16px rgba(139, 94, 60, 0.15)'
   },
   
-  // Ícono de flecha en el botón
   arrowIcon: {
-    fontSize: '1rem'
+    fontSize: '1.1rem' // ← AUMENTADO de 1rem
   },
   
-  // Spinner (círculo girando)
   spinner: {
     width: '18px',
     height: '18px',
     border: '3px solid rgba(255, 255, 255, 0.3)',
     borderTop: '3px solid #FFFFFF',
     borderRadius: '50%',
-    animation: 'spin 0.8s linear infinite' // Gira constantemente
+    animation: 'spin 0.8s linear infinite'
   },
   
-  // Footer con nota legal
   footer: {
     marginTop: '30px',
     paddingTop: '25px',
-    borderTop: '1px solid #E8E0D8' // Línea divisoria
+    borderTop: '1px solid #E8E0D8'
   },
   
-  // Texto del footer
   footerText: {
-    fontSize: '0.85rem',
+    fontSize: '0.95rem', // ← AUMENTADO de 0.85rem
     color: '#8D6E63',
     lineHeight: 1.6,
     textAlign: 'center'

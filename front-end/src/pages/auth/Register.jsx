@@ -3,6 +3,7 @@ import React, { useState } from 'react'; // React y useState nos permiten crear 
 import axios from 'axios'; // axios es como un mensajero que envía y recibe información del servidor
 import { useNavigate } from 'react-router-dom'; // useNavigate nos permite cambiar de página dentro de la aplicación
 import { FaUser, FaEnvelope, FaLock, FaCheckCircle, FaArrowRight, FaCoffee } from 'react-icons/fa'; // Iconos bonitos para decorar la interfaz
+import GranosCafe from '../img/GranosCafe.png';
 
 // Esta es la dirección donde vive nuestro servidor (backend)
 const API_URL = 'http://127.0.0.1:8000/api'; 
@@ -313,30 +314,33 @@ const Register = () => {
     );
 };
 
+
 // ========== ESTILOS (CSS en JavaScript) ==========
-// Aquí definimos cómo se ve cada elemento
 const styles = {
     page: {
-        minHeight: '100vh', // Ocupa al menos toda la altura de la pantalla
-        background: 'linear-gradient(135deg, #FBF8F3 0%, #F5EBE0 50%, #EFE1D1 100%)', // Degradado de colores suaves
-        display: 'flex', // Usamos flexbox para centrar contenido
-        alignItems: 'center', // Centra verticalmente
-        justifyContent: 'center', // Centra horizontalmente
+        minHeight: '100vh',
+        backgroundImage: `url(${GranosCafe})`, // ← IMAGEN DE FONDO
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         padding: '20px',
-        fontFamily: "'Inter', -apple-system, sans-serif", // Fuente moderna
+        fontFamily: "'Inter', -apple-system, sans-serif",
         position: 'relative',
-        overflow: 'hidden' // Oculta lo que se salga de los bordes
+        overflow: 'hidden'
     },
-    // Círculos decorativos de fondo (solo estética)
     bgCircle1: {
-        position: 'absolute', // Se posiciona sobre otros elementos
+        position: 'absolute',
         width: '500px',
         height: '500px',
-        borderRadius: '50%', // Lo hace circular
-        background: 'radial-gradient(circle, rgba(139, 94, 60, 0.1) 0%, transparent 70%)', // Degradado radial
-        top: '-150px', // Posición desde arriba
-        right: '-150px', // Posición desde la derecha
-        pointerEvents: 'none' // No interfiere con clics del mouse
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(139, 94, 60, 0.1) 0%, transparent 70%)',
+        top: '-150px',
+        right: '-150px',
+        pointerEvents: 'none'
     },
     bgCircle2: {
         position: 'absolute',
@@ -356,155 +360,157 @@ const styles = {
         background: 'radial-gradient(circle, rgba(160, 129, 108, 0.06) 0%, transparent 70%)',
         top: '50%',
         left: '50%',
-        transform: 'translate(-50%, -50%)', // Centra el círculo
+        transform: 'translate(-50%, -50%)',
         pointerEvents: 'none'
     },
     container: {
         width: '100%',
-        maxWidth: '1100px', // Ancho máximo
-        minHeight: '750px', // Altura mínima
-        backgroundColor: '#FFFFFF', // Fondo blanco
-        borderRadius: '24px', // Esquinas redondeadas
-        display: 'flex', // Divide en dos paneles
-        boxShadow: '0 30px 60px rgba(62, 39, 35, 0.12)', // Sombra suave
+        maxWidth: '1100px',
+        minHeight: '750px',
+        backgroundColor: '#FFFFFF',
+        borderRadius: '24px',
+        display: 'flex',
+        justifyContent: 'center', // ← CENTRADO
+        boxShadow: '0 30px 60px rgba(62, 39, 35, 0.12)',
         overflow: 'hidden',
         position: 'relative',
-        zIndex: 1 // Se muestra por encima de los círculos de fondo
+        zIndex: 1
     },
     leftPanel: {
-        flex: 1, // Ocupa 1 parte del espacio disponible
-        background: 'linear-gradient(165deg, #6F4E37 0%, #8B5E3C 50%, #A0816C 100%)', // Degradado café
+        flex: 1,
+        background: 'linear-gradient(165deg, #6F4E37 0%, #8B5E3C 50%, #A0816C 100%)',
         padding: '60px 50px',
         display: 'flex',
-        flexDirection: 'column', // Elementos apilados verticalmente
-        justifyContent: 'space-between', // Distribuye el espacio
+        flexDirection: 'column',
+        justifyContent: 'space-between',
         position: 'relative',
         overflow: 'hidden'
     },
     brandSection: {
-        textAlign: 'center', // Texto centrado
-        color: '#FFFFFF' // Texto blanco
+        textAlign: 'center',
+        color: '#FFFFFF'
     },
     logoCircle: {
         width: '80px',
         height: '80px',
-        borderRadius: '50%', // Círculo
-        backgroundColor: 'rgba(255, 255, 255, 0.15)', // Blanco semi-transparente
-        backdropFilter: 'blur(10px)', // Efecto de desenfoque
+        borderRadius: '50%',
+        backgroundColor: 'rgba(255, 255, 255, 0.15)',
+        backdropFilter: 'blur(10px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        margin: '0 auto 25px', // Centrado horizontalmente
-        border: '2px solid rgba(255, 255, 255, 0.2)' // Borde blanco suave
+        margin: '0 auto 25px',
+        border: '2px solid rgba(255, 255, 255, 0.2)'
     },
     logoIcon: {
-        fontSize: '2.5rem', // Tamaño grande
+        fontSize: '2.5rem',
         color: '#FFFFFF'
     },
     brandTitle: {
         fontSize: '2.6rem',
-        fontWeight: '800', // Muy grueso (bold)
+        fontWeight: '800',
         marginBottom: '15px',
-        letterSpacing: '-0.5px', // Letras un poco más juntas
-        lineHeight: '1.1' // Espaciado entre líneas
+        letterSpacing: '-0.5px',
+        lineHeight: '1.1'
     },
     brandTagline: {
-        fontSize: '1.05rem',
-        opacity: 0.9, // Ligeramente transparente
-        fontWeight: '400', // Peso normal
+        fontSize: '1.15rem', // ← AUMENTADO
+        opacity: 0.9,
+        fontWeight: '400',
         lineHeight: 1.6
     },
     featuresBox: {
-        backgroundColor: 'rgba(255, 255, 255, 0.1)', // Fondo blanco semi-transparente
-        backdropFilter: 'blur(10px)', // Efecto vidrio esmerilado
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        backdropFilter: 'blur(10px)',
         borderRadius: '16px',
         padding: '30px',
         border: '1px solid rgba(255, 255, 255, 0.15)'
     },
     featureItem: {
         display: 'flex',
-        alignItems: 'center', // Icono y texto alineados verticalmente
+        alignItems: 'center',
         marginBottom: '18px',
         color: '#FFFFFF'
     },
     checkIcon: {
-        fontSize: '1.3rem',
-        color: '#E0C3A2', // Color beige claro
-        marginRight: '15px', // Espacio entre icono y texto
-        flexShrink: 0 // No se encoge si falta espacio
+        fontSize: '1.4rem', // ← AUMENTADO
+        color: '#E0C3A2',
+        marginRight: '15px',
+        flexShrink: 0
     },
     featureText: {
-        fontSize: '0.95rem',
-        fontWeight: '500' // Peso medio
+        fontSize: '1.05rem', // ← AUMENTADO
+        fontWeight: '500'
     },
     businessBanner: {
         textAlign: 'center',
         color: '#FFFFFF'
     },
     businessQuestion: {
-        fontSize: '0.95rem',
+        fontSize: '1.05rem', // ← AUMENTADO
         marginBottom: '15px',
         opacity: 0.9
     },
     businessBtn: {
-        backgroundColor: 'transparent', // Fondo transparente
-        border: '2px solid rgba(255, 255, 255, 0.3)', // Borde blanco suave
+        backgroundColor: 'transparent',
+        border: '2px solid rgba(255, 255, 255, 0.3)',
         color: '#FFFFFF',
         padding: '12px 32px',
-        borderRadius: '50px', // Muy redondeado (píldora)
-        fontSize: '0.95rem',
+        borderRadius: '50px',
+        fontSize: '1.05rem', // ← AUMENTADO
         fontWeight: '600',
-        cursor: 'pointer', // Manita al pasar el mouse
-        transition: 'all 0.3s', // Transiciones suaves
+        cursor: 'pointer',
+        transition: 'all 0.3s',
         backdropFilter: 'blur(10px)'
     },
     rightPanel: {
-        flex: 1.3, // Ocupa 1.3 partes (más grande que el izquierdo)
+        flex: 1.3,
         padding: '60px 70px',
         display: 'flex',
         alignItems: 'center',
+        justifyContent: 'center', // ← CENTRADO
         backgroundColor: '#FFFFFF',
-        overflowY: 'auto' // Si el contenido es muy largo, permite scroll
+        overflowY: 'auto'
     },
     formWrapper: {
         width: '100%',
-        maxWidth: '450px' // Ancho máximo del formulario
+        maxWidth: '450px'
     },
     header: {
         marginBottom: '35px'
     },
     welcomeTitle: {
-        fontSize: '2.4rem',
-        color: '#3E2723', // Café oscuro
+        fontSize: '2.6rem', // ← AUMENTADO
+        color: '#3E2723',
         fontWeight: '800',
         marginBottom: '8px',
         letterSpacing: '-0.5px'
     },
     welcomeSubtitle: {
-        fontSize: '1rem',
-        color: '#8D6E63', // Café medio
+        fontSize: '1.1rem', // ← AUMENTADO
+        color: '#8D6E63',
         fontWeight: '400'
     },
     errorBox: {
-        backgroundColor: '#FEF2F2', // Rojo muy claro
-        border: '1px solid #FCA5A5', // Borde rojo
-        color: '#B91C1C', // Texto rojo oscuro
+        backgroundColor: '#FEF2F2',
+        border: '1px solid #FCA5A5',
+        color: '#B91C1C',
         padding: '14px 18px',
         borderRadius: '12px',
         marginBottom: '25px',
         display: 'flex',
         alignItems: 'center',
-        gap: '10px', // Espacio entre elementos
-        fontSize: '0.9rem',
+        gap: '10px',
+        fontSize: '1rem', // ← AUMENTADO
         fontWeight: '500'
     },
     errorIcon: {
-        fontSize: '1.1rem'
+        fontSize: '1.2rem' // ← AUMENTADO
     },
     form: {
         display: 'flex',
-        flexDirection: 'column', // Campos apilados verticalmente
-        gap: '20px' // Espacio entre campos
+        flexDirection: 'column',
+        gap: '20px'
     },
     inputGroup: {
         display: 'flex',
@@ -512,98 +518,98 @@ const styles = {
         gap: '8px'
     },
     label: {
-        fontSize: '0.9rem',
+        fontSize: '1rem', // ← AUMENTADO
         fontWeight: '600',
-        color: '#5D4037', // Café oscuro
-        letterSpacing: '0.3px' // Letras ligeramente separadas
+        color: '#5D4037',
+        letterSpacing: '0.3px'
     },
     inputBox: {
-        position: 'relative', // Para posicionar el icono dentro
+        position: 'relative',
         display: 'flex',
         alignItems: 'center',
-        backgroundColor: '#FAFAFA', // Gris muy claro
+        backgroundColor: '#FAFAFA',
         borderRadius: '14px',
-        border: '2px solid #E8E0D8', // Borde beige
-        transition: 'all 0.3s' // Transiciones suaves
+        border: '2px solid #E8E0D8',
+        transition: 'all 0.3s'
     },
     inputBoxFocused: {
-        backgroundColor: '#FFFFFF', // Fondo blanco cuando está activo
-        borderColor: '#8B5E3C', // Borde café
-        boxShadow: '0 0 0 4px rgba(139, 94, 60, 0.1)' // Sombra suave alrededor
+        backgroundColor: '#FFFFFF',
+        borderColor: '#8B5E3C',
+        boxShadow: '0 0 0 4px rgba(139, 94, 60, 0.1)'
     },
     inputBoxError: {
-        borderColor: '#FCA5A5', // Borde rojo si hay error
-        backgroundColor: '#FEF2F2' // Fondo rojo muy claro
+        borderColor: '#FCA5A5',
+        backgroundColor: '#FEF2F2'
     },
     inputIcon: {
-        position: 'absolute', // Posicionado dentro del campo
-        left: '18px', // 18px desde la izquierda
-        color: '#A0816C', // Color café claro
-        fontSize: '1.1rem'
+        position: 'absolute',
+        left: '18px',
+        color: '#A0816C',
+        fontSize: '1.2rem' // ← AUMENTADO
     },
     input: {
         width: '100%',
-        padding: '16px 18px 16px 52px', // Espacio extra a la izquierda para el icono
-        border: 'none', // Sin borde (ya lo tiene el contenedor)
-        backgroundColor: 'transparent', // Fondo transparente
-        fontSize: '1rem',
+        padding: '16px 18px 16px 52px',
+        border: 'none',
+        backgroundColor: 'transparent',
+        fontSize: '1.05rem', // ← AUMENTADO
         color: '#3E2723',
-        outline: 'none', // Quita el borde azul por defecto
+        outline: 'none',
         fontWeight: '500'
     },
     errorText: {
-        color: '#B91C1C', // Rojo oscuro
-        fontSize: '0.8rem',
+        color: '#B91C1C',
+        fontSize: '0.85rem', // ← AUMENTADO
         marginLeft: '5px',
         fontWeight: '500'
     },
     submitBtn: {
-        backgroundColor: '#8B5E3C', // Café
+        backgroundColor: '#8B5E3C',
         color: '#FFFFFF',
         padding: '18px',
         border: 'none',
         borderRadius: '14px',
-        fontSize: '1.05rem',
+        fontSize: '1.1rem', // ← AUMENTADO
         fontWeight: '700',
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         gap: '10px',
-        boxShadow: '0 12px 24px rgba(139, 94, 60, 0.25)', // Sombra pronunciada
+        boxShadow: '0 12px 24px rgba(139, 94, 60, 0.25)',
         transition: 'all 0.3s',
         marginTop: '10px'
     },
     submitBtnDisabled: {
-        backgroundColor: '#A0816C', // Café más claro cuando está deshabilitado
-        cursor: 'not-allowed', // Cursor de "no permitido"
-        boxShadow: '0 8px 16px rgba(139, 94, 60, 0.15)' // Sombra más suave
+        backgroundColor: '#A0816C',
+        cursor: 'not-allowed',
+        boxShadow: '0 8px 16px rgba(139, 94, 60, 0.15)'
     },
     arrowIcon: {
-        fontSize: '1rem'
+        fontSize: '1.1rem' // ← AUMENTADO
     },
     spinner: {
         width: '18px',
         height: '18px',
-        border: '3px solid rgba(255, 255, 255, 0.3)', // Borde gris claro
-        borderTop: '3px solid #FFFFFF', // Parte superior blanca (crea el efecto de giro)
-        borderRadius: '50%', // Circular
-        animation: 'spin 0.8s linear infinite' // Animación de giro infinita
+        border: '3px solid rgba(255, 255, 255, 0.3)',
+        borderTop: '3px solid #FFFFFF',
+        borderRadius: '50%',
+        animation: 'spin 0.8s linear infinite'
     },
     termsSection: {
         marginTop: '30px',
         textAlign: 'center'
     },
     termsText: {
-        fontSize: '0.85rem',
+        fontSize: '0.95rem', // ← AUMENTADO
         color: '#8D6E63',
         lineHeight: 1.6
     },
     termsLink: {
-        color: '#8B5E3C', // Café
-        textDecoration: 'none', // Sin subrayado
+        color: '#8B5E3C',
+        textDecoration: 'none',
         fontWeight: '600',
-        transition: 'color 0.3s' // Transición suave al cambiar de color
+        transition: 'color 0.3s'
     }
 };
 

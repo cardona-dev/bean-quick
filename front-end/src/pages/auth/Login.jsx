@@ -15,6 +15,7 @@ import { useNavigate,Link } from 'react-router-dom';
 
 // Iconos bonitos para decorar el formulario (sobre, candado, café, flecha)
 import { FaEnvelope, FaLock, FaCoffee, FaArrowRight } from 'react-icons/fa';
+import GranosCafe from '../img/GranosCafe.png';
 
 // ========================================
 // CONFIGURACIÓN
@@ -337,27 +338,31 @@ const Login = () => {
 const styles = {
     // Contenedor de toda la página
     page: {
-        minHeight: '100vh', // Ocupa toda la altura de la pantalla
-        background: 'linear-gradient(135deg, #FBF8F3 0%, #F5EBE0 50%, #EFE1D1 100%)', // Degradado de colores beige
-        display: 'flex', // Usar flexbox para centrar
-        alignItems: 'center', // Centrar verticalmente
-        justifyContent: 'center', // Centrar horizontalmente
-        padding: '20px', // Espacio alrededor
-        fontFamily: "'Inter', -apple-system, sans-serif", // Tipo de letra
-        position: 'relative', // Para posicionar elementos hijos
-        overflow: 'hidden' // Ocultar lo que salga de los bordes
+        minHeight: '100vh',
+        backgroundImage: `url(${GranosCafe})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+        display: 'flex', // ← AGREGADO
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px',
+        fontFamily: "'Inter', -apple-system, sans-serif",
+        position: 'relative',
+        overflow: 'hidden'
     },
 
     // Círculo decorativo 1 (arriba-derecha)
     bgCircle1: {
-        position: 'absolute', // Posición fija
+        position: 'absolute',
         width: '500px',
         height: '500px',
-        borderRadius: '50%', // Hacerlo circular
-        background: 'radial-gradient(circle, rgba(139, 94, 60, 0.1) 0%, transparent 70%)', // Degradado radial
-        top: '-150px', // Posición desde arriba (negativo = fuera de vista parcialmente)
-        right: '-150px', // Posición desde la derecha
-        pointerEvents: 'none' // No interfiere con clics del mouse
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(139, 94, 60, 0.1) 0%, transparent 70%)',
+        top: '-150px',
+        right: '-150px',
+        pointerEvents: 'none'
     },
 
     // Círculo decorativo 2 (abajo-izquierda)
@@ -381,32 +386,33 @@ const styles = {
         background: 'radial-gradient(circle, rgba(160, 129, 108, 0.06) 0%, transparent 70%)',
         top: '50%',
         left: '50%',
-        transform: 'translate(-50%, -50%)', // Centrar perfectamente
+        transform: 'translate(-50%, -50%)',
         pointerEvents: 'none'
     },
 
     // Contenedor principal blanco
     container: {
         width: '100%',
-        maxWidth: '1100px', // Ancho máximo
-        minHeight: '700px', // Altura mínima
-        backgroundColor: '#FFFFFF', // Fondo blanco
-        borderRadius: '24px', // Esquinas redondeadas
-        display: 'flex', // Dividir en dos paneles
-        boxShadow: '0 30px 60px rgba(62, 39, 35, 0.12)', // Sombra suave
-        overflow: 'hidden', // Ocultar lo que salga
+        maxWidth: '1100px',
+        minHeight: '700px',
+        backgroundColor: '#FFFFFF',
+        borderRadius: '24px',
+        display: 'flex',
+        justifyContent: 'center', // ← AGREGADO para centrar
+        boxShadow: '0 30px 60px rgba(62, 39, 35, 0.12)',
+        overflow: 'hidden',
         position: 'relative',
-        zIndex: 1 // Aparecer encima de los círculos decorativos
+        zIndex: 1
     },
 
     // Panel izquierdo (café/marrón)
     leftPanel: {
-        flex: 1, // Ocupa 1 parte del espacio
-        background: 'linear-gradient(165deg, #6F4E37 0%, #8B5E3C 50%, #A0816C 100%)', // Degradado marrón
+        flex: 1,
+        background: 'linear-gradient(165deg, #6F4E37 0%, #8B5E3C 50%, #A0816C 100%)',
         padding: '60px 50px',
         display: 'flex',
-        flexDirection: 'column', // Elementos en columna
-        justifyContent: 'space-between', // Espaciar elementos
+        flexDirection: 'column',
+        justifyContent: 'space-between',
         position: 'relative',
         overflow: 'hidden'
     },
@@ -414,21 +420,21 @@ const styles = {
     // Sección de la marca (logo + nombre)
     brandSection: {
         textAlign: 'center',
-        color: '#FFFFFF' // Texto blanco
+        color: '#FFFFFF'
     },
 
     // Círculo que contiene el logo
     logoCircle: {
         width: '80px',
         height: '80px',
-        borderRadius: '50%', // Circular
-        backgroundColor: 'rgba(255, 255, 255, 0.15)', // Blanco semi-transparente
-        backdropFilter: 'blur(10px)', // Efecto de desenfoque
+        borderRadius: '50%',
+        backgroundColor: 'rgba(255, 255, 255, 0.15)',
+        backdropFilter: 'blur(10px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        margin: '0 auto 25px', // Centrado con margen abajo
-        border: '2px solid rgba(255, 255, 255, 0.2)' // Borde blanco suave
+        margin: '0 auto 25px',
+        border: '2px solid rgba(255, 255, 255, 0.2)'
     },
 
     // Ícono del café dentro del círculo
@@ -440,23 +446,23 @@ const styles = {
     // Título "Bean Quick"
     brandTitle: {
         fontSize: '2.8rem',
-        fontWeight: '800', // Muy negrita
+        fontWeight: '800',
         marginBottom: '15px',
-        letterSpacing: '-0.5px' // Letras más juntas
+        letterSpacing: '-0.5px'
     },
 
     // Subtítulo "Tu café favorito..."
     brandTagline: {
-        fontSize: '1.05rem',
-        opacity: 0.9, // Ligeramente transparente
+        fontSize: '1.15rem', // ← AUMENTADO de 1.05rem
+        opacity: 0.9,
         fontWeight: '400',
         lineHeight: 1.6
     },
 
     // Caja con las características
     featuresBox: {
-        backgroundColor: 'rgba(255, 255, 255, 0.1)', // Blanco semi-transparente
-        backdropFilter: 'blur(10px)', // Efecto vidrio esmerilado
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        backdropFilter: 'blur(10px)',
         borderRadius: '16px',
         padding: '30px',
         border: '1px solid rgba(255, 255, 255, 0.15)'
@@ -480,13 +486,13 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
         marginRight: '15px',
-        fontSize: '0.85rem',
+        fontSize: '0.95rem', // ← AUMENTADO de 0.85rem
         fontWeight: 'bold'
     },
 
     // Texto de la característica
     featureText: {
-        fontSize: '0.95rem',
+        fontSize: '1.05rem', // ← AUMENTADO de 0.95rem
         fontWeight: '500'
     },
 
@@ -498,31 +504,32 @@ const styles = {
 
     // Pregunta del banner
     businessQuestion: {
-        fontSize: '0.95rem',
+        fontSize: '1.05rem', // ← AUMENTADO de 0.95rem
         marginBottom: '15px',
         opacity: 0.9
     },
 
     // Botón "Únete ahora"
     businessBtn: {
-        backgroundColor: 'transparent', // Sin fondo
-        border: '2px solid rgba(255, 255, 255, 0.3)', // Borde blanco
+        backgroundColor: 'transparent',
+        border: '2px solid rgba(255, 255, 255, 0.3)',
         color: '#FFFFFF',
         padding: '12px 32px',
-        borderRadius: '50px', // Muy redondeado
-        fontSize: '0.95rem',
+        borderRadius: '50px',
+        fontSize: '1.05rem', // ← AUMENTADO de 0.95rem
         fontWeight: '600',
-        cursor: 'pointer', // Manita al pasar el mouse
-        transition: 'all 0.3s', // Animación suave
+        cursor: 'pointer',
+        transition: 'all 0.3s',
         backdropFilter: 'blur(10px)'
     },
 
     // Panel derecho (formulario)
     rightPanel: {
-        flex: 1.3, // Ocupa 1.3 partes del espacio (más grande que el izquierdo)
+        flex: 1.3,
         padding: '60px 70px',
         display: 'flex',
         alignItems: 'center',
+        justifyContent: 'center', // ← AGREGADO para centrar
         backgroundColor: '#FFFFFF'
     },
 
@@ -539,8 +546,8 @@ const styles = {
 
     // Título "¡Bienvenido de vuelta!"
     welcomeTitle: {
-        fontSize: '2.4rem',
-        color: '#3E2723', // Marrón oscuro
+        fontSize: '2.6rem', // ← AUMENTADO de 2.4rem
+        color: '#3E2723',
         fontWeight: '800',
         marginBottom: '8px',
         letterSpacing: '-0.5px'
@@ -548,36 +555,36 @@ const styles = {
 
     // Subtítulo "Inicia sesión para continuar"
     welcomeSubtitle: {
-        fontSize: '1rem',
-        color: '#8D6E63', // Marrón claro
+        fontSize: '1.1rem', // ← AUMENTADO de 1rem
+        color: '#8D6E63',
         fontWeight: '400'
     },
 
     // Caja de error (cuando hay un error)
     errorBox: {
-        backgroundColor: '#FEF2F2', // Fondo rojo suave
-        border: '1px solid #FCA5A5', // Borde rojo
-        color: '#B91C1C', // Texto rojo oscuro
+        backgroundColor: '#FEF2F2',
+        border: '1px solid #FCA5A5',
+        color: '#B91C1C',
         padding: '14px 18px',
         borderRadius: '12px',
         marginBottom: '25px',
         display: 'flex',
         alignItems: 'center',
         gap: '10px',
-        fontSize: '0.9rem',
+        fontSize: '1rem', // ← AUMENTADO de 0.9rem
         fontWeight: '500'
     },
 
     // Ícono de advertencia en la caja de error
     errorIcon: {
-        fontSize: '1.1rem'
+        fontSize: '1.2rem' // ← AUMENTADO de 1.1rem
     },
 
     // Formulario completo
     form: {
         display: 'flex',
         flexDirection: 'column',
-        gap: '24px' // Espacio entre elementos
+        gap: '24px'
     },
 
     // Grupo de input (label + input)
@@ -589,7 +596,7 @@ const styles = {
 
     // Etiqueta del input (ej: "Correo electrónico")
     label: {
-        fontSize: '0.9rem',
+        fontSize: '1rem', // ← AUMENTADO de 0.9rem
         fontWeight: '600',
         color: '#5D4037',
         letterSpacing: '0.3px'
@@ -597,96 +604,96 @@ const styles = {
 
     // Caja que contiene el input
     inputBox: {
-        position: 'relative', // Para posicionar el ícono
+        position: 'relative',
         display: 'flex',
         alignItems: 'center',
-        backgroundColor: '#FAFAFA', // Gris muy claro
+        backgroundColor: '#FAFAFA',
         borderRadius: '14px',
-        border: '2px solid #E8E0D8', // Borde beige
-        transition: 'all 0.3s' // Animación suave
+        border: '2px solid #E8E0D8',
+        transition: 'all 0.3s'
     },
 
     // Estilos cuando el input está enfocado (activo)
     inputBoxFocused: {
-        backgroundColor: '#FFFFFF', // Blanco puro
-        borderColor: '#8B5E3C', // Borde marrón
-        boxShadow: '0 0 0 4px rgba(139, 94, 60, 0.1)' // Sombra suave alrededor
+        backgroundColor: '#FFFFFF',
+        borderColor: '#8B5E3C',
+        boxShadow: '0 0 0 4px rgba(139, 94, 60, 0.1)'
     },
 
     // Ícono dentro del input (sobre o candado)
     inputIcon: {
         position: 'absolute',
-        left: '18px', // Posición desde la izquierda
+        left: '18px',
         color: '#A0816C',
-        fontSize: '1.1rem'
+        fontSize: '1.2rem' // ← AUMENTADO de 1.1rem
     },
 
     // Campo de texto del input
     input: {
         width: '100%',
-        padding: '16px 18px 16px 52px', // Más padding izquierdo para dejar espacio al ícono
-        border: 'none', // Sin borde (lo tiene el inputBox)
-        backgroundColor: 'transparent', // Transparente
-        fontSize: '1rem',
+        padding: '16px 18px 16px 52px',
+        border: 'none',
+        backgroundColor: 'transparent',
+        fontSize: '1.05rem', // ← AUMENTADO de 1rem
         color: '#3E2723',
-        outline: 'none', // Sin borde al hacer foco
+        outline: 'none',
         fontWeight: '500'
     },
 
     // Sección de "¿Olvidaste tu contraseña?"
     forgotSection: {
-        textAlign: 'right', // Alineado a la derecha
-        marginTop: '-8px' // Subir un poco
+        textAlign: 'right',
+        marginTop: '-8px'
     },
 
     // Link "¿Olvidaste tu contraseña?"
     forgotLink: {
         color: '#8B5E3C',
-        textDecoration: 'none', // Sin subrayado
-        fontSize: '0.9rem',
+        textDecoration: 'none',
+        fontSize: '1rem', // ← AUMENTADO de 0.9rem
         fontWeight: '600',
         transition: 'color 0.3s'
     },
 
     // Botón principal "Iniciar sesión"
     submitBtn: {
-        backgroundColor: '#8B5E3C', // Marrón
+        backgroundColor: '#8B5E3C',
         color: '#FFFFFF',
         padding: '18px',
         border: 'none',
         borderRadius: '14px',
-        fontSize: '1.05rem',
+        fontSize: '1.1rem', // ← AUMENTADO de 1.05rem
         fontWeight: '700',
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '10px', // Espacio entre texto e ícono
-        boxShadow: '0 12px 24px rgba(139, 94, 60, 0.25)', // Sombra grande
+        gap: '10px',
+        boxShadow: '0 12px 24px rgba(139, 94, 60, 0.25)',
         transition: 'all 0.3s',
         marginTop: '10px'
     },
 
     // Botón deshabilitado (cuando está cargando)
     submitBtnDisabled: {
-        backgroundColor: '#A0816C', // Marrón más claro
-        cursor: 'not-allowed', // Cursor de prohibido
-        boxShadow: '0 8px 16px rgba(139, 94, 60, 0.15)' // Sombra más pequeña
+        backgroundColor: '#A0816C',
+        cursor: 'not-allowed',
+        boxShadow: '0 8px 16px rgba(139, 94, 60, 0.15)'
     },
 
     // Ícono de flecha en el botón
     arrowIcon: {
-        fontSize: '1rem'
+        fontSize: '1.1rem' // ← AUMENTADO de 1rem
     },
 
     // Spinner (círculo girando) cuando está cargando
     spinner: {
         width: '18px',
         height: '18px',
-        border: '3px solid rgba(255, 255, 255, 0.3)', // Borde gris
-        borderTop: '3px solid #FFFFFF', // Borde blanco arriba
-        borderRadius: '50%', // Circular
-        animation: 'spin 0.8s linear infinite' // Animación de giro infinito
+        border: '3px solid rgba(255, 255, 255, 0.3)',
+        borderTop: '3px solid #FFFFFF',
+        borderRadius: '50%',
+        animation: 'spin 0.8s linear infinite'
     },
 
     // Divisor con líneas y texto "o"
@@ -699,7 +706,7 @@ const styles = {
 
     // Línea del divisor
     dividerLine: {
-        flex: 1, // Ocupa todo el espacio disponible
+        flex: 1,
         height: '1px',
         backgroundColor: '#E8E0D8'
     },
@@ -707,7 +714,7 @@ const styles = {
     // Texto "o" en el divisor
     dividerText: {
         color: '#A0816C',
-        fontSize: '0.85rem',
+        fontSize: '0.95rem', // ← AUMENTADO de 0.85rem
         fontWeight: '600'
     },
 
@@ -719,7 +726,7 @@ const styles = {
     // Texto "¿No tienes cuenta?"
     signupText: {
         color: '#8D6E63',
-        fontSize: '0.95rem',
+        fontSize: '1.05rem', // ← AUMENTADO de 0.95rem
         marginRight: '8px'
     },
 
@@ -727,35 +734,10 @@ const styles = {
     signupLink: {
         color: '#8B5E3C',
         textDecoration: 'none',
-        fontSize: '0.95rem',
+        fontSize: '1.05rem', // ← AUMENTADO de 0.95rem
         fontWeight: '700',
         transition: 'color 0.3s'
     }
 };
-
-// ========================================
-// ANIMACIÓN DEL SPINNER
-// ========================================
-// Creamos una hoja de estilos en el documento
-const styleSheet = document.createElement('style');
-// Definimos la animación de giro (de 0° a 360°)
-styleSheet.textContent = `
-    @keyframes spin {
-        0% { transform: rotate(0deg); }    /* Inicio: 0 grados */
-        100% { transform: rotate(360deg); } /* Fin: 360 grados (vuelta completa) */
-    }
-`;
-// Agregamos la animación al documento HTML
-document.head.appendChild(styleSheet);
-
-// ========================================
-// RESPONSIVO - Para pantallas pequeñas (móviles)
-// ========================================
-// Si la ventana tiene menos de 850px de ancho
-if (typeof window !== 'undefined' && window.innerWidth <= 850) {
-    // Ocultamos el panel izquierdo para ahorrar espacio
-    styles.leftPanel.display = 'none';
-}
-
 // Exportamos el componente para usarlo en otras partes de la aplicación
 export default Login;

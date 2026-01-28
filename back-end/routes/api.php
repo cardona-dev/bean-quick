@@ -55,24 +55,24 @@ Route::post('/empresa/activar/{token}', [EmpresaActivacionController::class, 'st
  * RUTAS PROTEGIDAS (SANCTUM)
  * ==========================================
  * Solo usuarios autenticados pueden acceder.
- */
+*/
 Route::middleware('auth:sanctum')->group(function () {
-
+    
     // Gestión de Sesión y Perfil General
     Route::get('/user', function (Request $request) {
         return $request->user()->load('empresa');
     });
-
+    
     Route::prefix('profile')->group(function () {
         Route::patch('/', [ClienteController::class, 'updateProfile']);
     });
-
+    
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
-
+    
     /**
      * --- ROL: ADMIN ---
      * Gestión de solicitudes de empresas y mantenimiento de categorías.
-     */
+    */
     Route::group(['prefix' => 'admin'], function () {
         Route::get('/solicitudes', [AdminController::class, 'dashboard']);
         Route::post('/aprobar/{id}', [AdminController::class, 'aprobar']);
@@ -80,18 +80,18 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/categorias', function (Request $request) {
             $data = $request->validate(['nombre' => 'required|unique:categorias']);
             return App\Models\Categoria::create($data);
-        });
-    });
-
-    /**
+            });
+            });
+            
+            /**
      * --- ROL: EMPRESA ---
      * Gestión de inventario, pedidos recibidos y métricas del negocio.
-     */
+            */
     Route::prefix('empresa')->group(function () {
         // Perfil de Negocio
         Route::get('/perfil', [EmpresaController::class, 'show']);
         Route::post('/update', [EmpresaController::class, 'update']);
-
+        
         // Gestión de Productos (CRUD)
         Route::get('/productos', [ProductoController::class, 'index']);
         Route::get('/productos/{producto}', [ProductoController::class, 'show']);
@@ -104,6 +104,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/calificaciones', [EmpresaDashboardController::class, 'calificaciones']);
         Route::get('/pedidos', [PedidoController::class, 'indexEmpresa']);
         Route::patch('/pedidos/{pedido}/estado', [PedidoController::class, 'actualizarEstado']);
+        Route::get('/dashboard/pdf', [EmpresaDashboardController::class, 'descargarReporte']);
+
     });
 
     /**
