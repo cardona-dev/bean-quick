@@ -71,7 +71,7 @@ const VistaTienda = ({ agregarAlCarrito, carrito = [] }) => {
 
             <div style={styles.contentWrapper}>
                 <div style={styles.filterBar}>
-                    <input type="text" placeholder="🔍 Buscar producto..." style={styles.searchInput} onChange={(e) => setFiltroNombre(e.target.value)} />
+                    <input type="text" placeholder="Buscar producto..." style={styles.searchInput} onChange={(e) => setFiltroNombre(e.target.value)} />
                     <select style={styles.select} onChange={(e) => setCategoriaSeleccionada(e.target.value)}>
                         <option value="todas">Todas las categorías</option>
                         {categorias.map(cat => <option key={cat.id} value={cat.id}>{cat.nombre}</option>)}
@@ -141,7 +141,7 @@ const styles = {
     headerContent: { display: 'flex', alignItems: 'center', gap: '20px', width: '100%', maxWidth: '1200px', margin: '0 auto', zIndex: 2 },
     shopLogo: { width: '120px', height: '120px', borderRadius: '15px', objectFit: 'cover', border: '4px solid white', backgroundColor: 'white' },
     headerTexts: { color: 'white' },
-    empresaNombre: { margin: 0, fontSize: '32px', textShadow: '2px 2px 8px rgba(0,0,0,0.8)' },
+    empresaNombre: { margin: 0, fontSize: '32px', textShadow: '2px 2px 8px rgba(0,0,0,0.8)', color:"#ffff" },
     empresaSlogan: { margin: 0, opacity: 0.9, fontSize: '18px', textShadow: '1px 1px 4px rgba(0,0,0,0.8)' },
     contentWrapper: { maxWidth: '1200px', margin: '-30px auto 0 auto', padding: '0 20px 40px 20px', position: 'relative', zIndex: 5 },
     filterBar: { display: 'flex', gap: '15px', marginBottom: '30px', background: 'white', padding: '20px', borderRadius: '15px', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' },
