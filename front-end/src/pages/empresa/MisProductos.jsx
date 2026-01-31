@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaEdit, FaTrash, FaPlus, FaImage, FaExclamationTriangle } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaPlus, FaImage, FaExclamationTriangle,FaBox } from 'react-icons/fa';
 
 import LayoutEmpresa from '../components/LayoutEmpresa';
 

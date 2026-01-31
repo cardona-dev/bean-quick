@@ -122,7 +122,6 @@ const DashboardEmpresa = () => {
     const stats = data?.stats_cards || {};
     const charts = data?.charts || {};
     const topProductos = data?.top_productos || [];
-    console.log(topProductos)
     const ultimosPedidos = data?.ultimos_pedidos || [];
 
     return (
