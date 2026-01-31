@@ -6,10 +6,12 @@ use App\Models\User;
 use App\Models\Empresa;
 use App\Models\Pedido;
 use App\Models\SolicitudEmpresa;
+use App\Models\Categoria;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ActivacionEmpresaMail;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
@@ -84,5 +86,56 @@ class AdminController extends Controller
             'message'   => 'Solicitud rechazada.',
             'solicitud' => $solicitud
         ]);
+    }
+
+    /**
+     * FUNCIÓN CREAR CATEGORÍA:
+     * Crea una nueva categoría validando que el nombre sea único.
+     */
+    public function crearCategoria(Request $request): JsonResponse
+    {
+        // Valida que el nombre sea requerido y único en la tabla de categorías
+        $validated = $request->validate([
+            'nombre' => 'required|string|unique:categorias,nombre'
+        ]);
+
+        try {
+            $categoria = Categoria::create($validated);
+
+            return response()->json([
+                'message'  => 'Categoría creada correctamente.',
+                'categoria' => $categoria
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al crear la categoría.',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * FUNCIÓN ELIMINAR CATEGORÍA:
+     * Elimina una categoría existente.
+     */
+    public function eliminarCategoria($id): JsonResponse
+    {
+        try {
+            $categoria = Categoria::findOrFail($id);
+            $categoria->delete();
+
+            return response()->json([
+                'message' => 'Categoría eliminada correctamente.'
+            ], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Categoría no encontrada.'
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al eliminar la categoría.',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
     }
 }
