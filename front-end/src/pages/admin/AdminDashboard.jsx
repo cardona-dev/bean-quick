@@ -17,6 +17,13 @@ import {
     FaSignOutAlt   // Ícono de salida (cerrar sesión)
 } from 'react-icons/fa';
 
+import { useState } from 'react'
+import axios from 'axios'
+import { FaTags } from 'react-icons/fa'
+import { useEffect } from 'react'
+import { FaTrash } from 'react-icons/fa'
+
+
 // ========================================
 // COMPONENTE PRINCIPAL - AdminDashboard
 // ========================================
@@ -30,6 +37,33 @@ const AdminDashboard = () => {
     // Buscamos el nombre guardado en localStorage
     // Si no existe, usamos 'Administrador' como valor por defecto
     const adminName = localStorage.getItem('USER_NAME') || 'Administrador';
+    const [categoriaNombre, setCategoriaNombre] = useState('')
+    const [loadingCategoria, setLoadingCategoria] = useState(false)
+    const [categorias, setCategorias] = useState([])
+    const [loadingCategorias, setLoadingCategorias] = useState(false)
+
+    // ========================================
+    // CARGAR CATEGORÍAS AL MONTAR EL COMPONENTE
+    // ========================================
+    useEffect(() => {
+        cargarCategorias();
+    }, []);
+
+    // ========================================
+    // FUNCIÓN: Cargar Categorías
+    // ========================================
+    const cargarCategorias = async () => {
+        setLoadingCategorias(true);
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/api/categorias');
+            setCategorias(response.data);
+        } catch (error) {
+            console.error('Error al cargar categorías:', error);
+        } finally {
+            setLoadingCategorias(false);
+        }
+    };
+
 
     // ========================================
     // MÓDULOS DEL DASHBOARD - Tarjetas principales
@@ -76,6 +110,71 @@ const AdminDashboard = () => {
         // Redirigimos al usuario a la página de login
         navigate('/login');
     };
+
+    //función para crear categoría
+
+    const crearCategoria = async () => {
+        if (!categoriaNombre.trim()) return;
+
+        try {
+            const token = localStorage.getItem('AUTH_TOKEN');
+            console.log('Token:', token);
+            console.log('Headers:', {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json'
+            });
+
+            const response = await axios.post(
+                'http://127.0.0.1:8000/api/admin/categorias',
+                { nombre: categoriaNombre },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: 'application/json'
+                    }
+                }
+            );
+
+            console.log('Respuesta:', response.data);
+            alert('Categoría creada correctamente');
+            setCategoriaNombre('');
+            cargarCategorias(); // Recargar la lista de categorías
+        } catch (error) {
+            console.error('Error completo:', error);
+            console.error('Status:', error.response?.status);
+            console.error('Data:', error.response?.data);
+            console.error('Headers enviados:', error.config?.headers);
+            alert(`Error: ${error.response?.data?.message || 'No autorizado o error del servidor'}`);
+        }
+    };
+
+    // ========================================
+    // FUNCIÓN: Eliminar Categoría
+    // ========================================
+    const eliminarCategoria = async (id) => {
+        if (!window.confirm('¿Estás seguro de que deseas eliminar esta categoría?')) return;
+
+        try {
+            const token = localStorage.getItem('AUTH_TOKEN');
+            await axios.delete(
+                `http://127.0.0.1:8000/api/admin/categorias/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: 'application/json'
+                    }
+                }
+            );
+
+            alert('Categoría eliminada correctamente');
+            cargarCategorias(); // Recargar la lista
+        } catch (error) {
+            console.error('Error al eliminar:', error);
+            alert(`Error: ${error.response?.data?.message || 'No se pudo eliminar la categoría'}`);
+        }
+    };
+
+
 
     // ========================================
     // PARTE VISUAL - Lo que se muestra en pantalla
@@ -159,6 +258,64 @@ const AdminDashboard = () => {
                     </div>
                 ))}
             </div>
+
+            {/* ========================================
+                CREAR CATEGORÍA
+            ======================================== */}
+            <div style={styles.categoriaCard}>
+                <div style={styles.categoriaHeader}>
+                    <FaTags size={28} />
+                    <h2 style={{ margin: 0 }}>Crear nueva categoría de productos</h2>
+                </div>
+            
+                <div style={styles.categoriaForm}>
+                    <input
+                        type="text"
+                        placeholder="Nombre de la categoría"
+                        value={categoriaNombre}
+                        onChange={(e) => setCategoriaNombre(e.target.value)}
+                        style={styles.categoriaInput}
+                    />
+            
+                    <button
+                        onClick={crearCategoria}
+                        disabled={loadingCategoria}
+                        style={styles.categoriaBtn}
+                    >
+                        {loadingCategoria ? 'Creando...' : 'Crear categoría'}
+                    </button>
+                </div>
+                    {/* ========================================
+                        LISTA DE CATEGORÍAS
+                    ======================================== */}
+                    <div style={styles.categoriaCard}>
+                        <div style={styles.categoriaHeader}>
+                            <h2 style={{ margin: 0 }}>Categorías existentes</h2>
+                        </div>
+        
+                        {loadingCategorias ? (
+                            <p style={{ color: '#7f8c8d' }}>Cargando categorías...</p>
+                        ) : categorias.length === 0 ? (
+                            <p style={{ color: '#7f8c8d' }}>No hay categorías creadas aún</p>
+                        ) : (
+                            <div style={styles.categoriasList}>
+                                {categorias.map((categoria) => (
+                                    <div key={categoria.id} style={styles.categoriaItem}>
+                                        <span style={styles.categoriaNombre}>{categoria.nombre}</span>
+                                        <button
+                                            onClick={() => eliminarCategoria(categoria.id)}
+                                            style={styles.deleteBtn}
+                                            title="Eliminar categoría"
+                                        >
+                                            <FaTrash size={16} />
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+            </div>
+
         </div>
     );
 };
@@ -278,7 +435,90 @@ const styles = {
         fontSize: '0.75rem', // Tamaño muy pequeño
         fontWeight: 'bold' // Texto en negrita
         // El color de fondo se define dinámicamente en el JSX
-    }
+    },
+
+    categoriaCard: {
+    marginTop: '50px',
+    backgroundColor: '#fff',
+    padding: '30px',
+    borderRadius: '12px',
+    boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
+    border: '1px solid #eee'
+},
+
+categoriaHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    marginBottom: '20px',
+    color: '#2c3e50'
+},
+
+categoriaForm: {
+    display: 'flex',
+    gap: '15px',
+    flexWrap: 'wrap'
+},
+
+categoriaInput: {
+    flex: 1,
+    padding: '10px 12px',
+    borderRadius: '6px',
+    border: '1px solid #ccc',
+    fontSize: '1.3rem'
+},
+
+categoriaBtn: {
+    backgroundColor: '#27ae60',
+    color: '#fff',
+    border: 'none',
+    padding: '10px 18px',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontWeight: 'bold'
+},
+
+// Lista de categorías
+categoriasList: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+    gap: '15px'
+},
+
+// Item individual de categoría
+categoriaItem: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#f9f9f9',
+    padding: '12px 16px',
+    borderRadius: '8px',
+    border: '1px solid #e0e0e0',
+    transition: 'all 0.3s ease'
+},
+
+// Nombre de la categoría
+categoriaNombre: {
+    fontSize: '1.3rem',
+    fontWeight: '500',
+    color: '#2c3e50',
+    flex: 1
+},
+
+// Botón de eliminar
+deleteBtn: {
+    backgroundColor: '#e74c3c',
+    color: '#fff',
+    border: 'none',
+    padding: '6px 10px',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'background-color 0.3s ease'
+}
+
 };
 
 // Exportamos el componente para usarlo en otras partes

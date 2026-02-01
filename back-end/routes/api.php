@@ -77,11 +77,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/solicitudes', [AdminController::class, 'dashboard']);
         Route::post('/aprobar/{id}', [AdminController::class, 'aprobar']);
         Route::post('/rechazar/{id}', [AdminController::class, 'rechazar']);
-        Route::post('/categorias', function (Request $request) {
-            $data = $request->validate(['nombre' => 'required|unique:categorias']);
-            return App\Models\Categoria::create($data);
-            });
-            });
+        Route::post('/categorias', [AdminController::class, 'crearCategoria']);
+        Route::delete('/categorias/{id}', [AdminController::class, 'eliminarCategoria']);
+    });
             
             /**
      * --- ROL: EMPRESA ---
