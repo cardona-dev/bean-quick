@@ -23,8 +23,9 @@ class AdminController extends Controller
     public function dashboard(): JsonResponse
     {
         return response()->json([
-            // Envía la lista de todos los usuarios registrados
-            'usuarios'    => User::all(),
+            // Envía la lista de todos los usuarios registrados que no sean empresa
+
+            'usuarios'    => User::where('rol', '!=', 'empresa')->get(),
             // Envía la lista de todas las empresas existentes
             'empresas'    => Empresa::all(),
             // Trae los pedidos junto con la información del cliente y la empresa
@@ -134,6 +135,70 @@ class AdminController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error al eliminar la categoría.',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }
+        public function verUsuario($id): JsonResponse
+    {
+        $usuario = User::findOrFail($id);
+        return response()->json($usuario);
+    }
+
+    /**
+     * EDITAR / ACTUALIZAR USUARIO
+     */
+    public function editarUsuario(Request $request, $id): JsonResponse
+    {
+        $usuario = User::findOrFail($id);
+
+        // Validación: el email debe ser único pero ignorando al usuario actual
+        $validated = $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email,' . $id,
+            'rol'      => 'required|in:admin,cliente',
+            'password' => 'nullable|string|min:6', // Password opcional
+        ]);
+
+        // Actualizamos datos básicos
+        $usuario->name = $validated['name'];
+        $usuario->email = $validated['email'];
+        $usuario->rol = $validated['rol'];
+
+        // Solo ciframos y cambiamos la contraseña si se envió una nueva
+        if (!empty($validated['password'])) {
+            $usuario->password = bcrypt($validated['password']);
+        }
+
+        $usuario->save();
+
+        return response()->json([
+            'message' => 'Usuario actualizado correctamente.',
+            'usuario' => $usuario
+        ]);
+    }
+
+    /**
+     * ELIMINAR USUARIO
+     */
+    public function eliminarUsuario($id): JsonResponse
+    {
+        try {
+            $usuario = User::findOrFail($id);
+
+            // Seguridad: El admin no debería poder eliminarse a sí mismo por error
+            if (auth()->id() == $id) {
+                return response()->json(['message' => 'No puedes eliminar tu propia cuenta de administrador.'], 403);
+            }
+
+            $usuario->delete();
+
+            return response()->json([
+                'message' => 'Usuario eliminado correctamente.'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al eliminar el usuario.',
                 'error'   => $e->getMessage()
             ], 500);
         }

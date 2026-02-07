@@ -79,6 +79,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/rechazar/{id}', [AdminController::class, 'rechazar']);
         Route::post('/categorias', [AdminController::class, 'crearCategoria']);
         Route::delete('/categorias/{id}', [AdminController::class, 'eliminarCategoria']);
+        Route::get('/solicitudes', [AdminController::class, 'dashboard']); // Dashboard global
+        Route::post('/aprobar/{id}', [AdminController::class, 'aprobar']);
+        Route::post('/rechazar/{id}', [AdminController::class, 'rechazar']);
+        Route::post('/categorias', [AdminController::class, 'crearCategoria']);
+        Route::delete('/categorias/{id}', [AdminController::class, 'eliminarCategoria']);
+        // Ver detalle de un usuario (para cargar el formulario de edición)
+        Route::get('/usuarios/{id}', [AdminController::class, 'verUsuario']); 
+        
+        // Guardar cambios del usuario (Nombre, Correo, Password, Rol)
+        Route::put('/usuarios/{id}', [AdminController::class, 'editarUsuario']); 
+        
+        // Eliminar usuario permanentemente
+        Route::delete('/usuarios/{id}', [AdminController::class, 'eliminarUsuario']);
     });
             
             /**
