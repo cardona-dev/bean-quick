@@ -23,7 +23,8 @@ return [
     // Aquí es donde está el problema: ¡el frontend!
     'http://localhost:5173',      
     'http://127.0.0.1:5173',      
-    'http://127.0.0.1:8000',      // Opcional, pero a veces útil
+    'http://127.0.0.1:8000', 
+    'https://beanquick.vercel.app',     // Opcional, pero a veces útil
 ],
 
     'allowed_origins_patterns' => [],
