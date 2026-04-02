@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FaArrowLeft, FaSave, FaImage } from 'react-icons/fa';
 
@@ -7,6 +7,46 @@ import { FaArrowLeft, FaSave, FaImage } from 'react-icons/fa';
 import LayoutEmpresa from '../components/LayoutEmpresa';
 
 const AgregarProducto = () => {
+        // Maneja el envío del formulario para crear o editar producto
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+            setLoading(true);
+            try {
+                const data = new FormData();
+                data.append('nombre', formData.nombre);
+                data.append('descripcion', formData.descripcion);
+                data.append('precio', formData.precio);
+                data.append('stock', formData.stock);
+                data.append('categoria_id', formData.categoria_id);
+                if (formData.imagen) {
+                    data.append('imagen', formData.imagen);
+                }
+                if (isEdit) {
+                    data.append('_method', 'PUT');
+                    await api.post(`/api/empresa/productos/${id}`, data, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+                    alert('¡Producto actualizado con éxito!');
+                } else {
+                    await api.post('/api/empresa/productos', data, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+                    alert('¡Producto creado con éxito!');
+                }
+                navigate('/empresa/productos');
+            } catch (error) {
+                console.error('Error al guardar:', error);
+                alert('Error al guardar: ' + (error.response?.data?.message || 'Revisa los campos'));
+            } finally {
+                setLoading(false);
+            }
+        };
     const navigate = useNavigate();
     const { id } = useParams();
     const isEdit = !!id;
@@ -34,10 +74,10 @@ const AgregarProducto = () => {
             try {
                 // 1. Cargamos Info Empresa y Categorías siempre
                 const [resEmpresa, resCats] = await Promise.all([
-                    axios.get('http://127.0.0.1:8000/api/empresa/dashboard', {
+                    api.get('/api/empresa/dashboard', {
                         headers: { Authorization: `Bearer ${token}` }
                     }),
-                    axios.get('http://127.0.0.1:8000/api/categorias')
+                    api.get('/api/categorias')
                 ]);
                 
                 setEmpresa(resEmpresa.data.empresa);
@@ -45,7 +85,7 @@ const AgregarProducto = () => {
 
                 // 2. Si hay ID, es EDICIÓN: Traemos los datos del producto
                 if (isEdit) {
-                    const resProd = await axios.get(`http://127.0.0.1:8000/api/empresa/productos/${id}`, {
+                    const resProd = await api.get(`/api/empresa/productos/${id}`, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                     
@@ -61,7 +101,7 @@ const AgregarProducto = () => {
 
                     // Mostramos la imagen actual si existe
                     if (p.imagen) {
-                        setPreview(`http://127.0.0.1:8000/storage/${p.imagen}`);
+                        setPreview(`${import.meta.env.VITE_API_URL}/storage/${p.imagen}`);
                     }
                 }
             } catch (error) {
@@ -79,56 +119,12 @@ const AgregarProducto = () => {
         setFormData({ ...formData, [name]: value });
     };
 
+
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
             setFormData({ ...formData, imagen: file });
             setPreview(URL.createObjectURL(file));
-        }
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-
-        // Usamos FormData para el envío de archivos
-        const data = new FormData();
-        data.append('nombre', formData.nombre);
-        data.append('descripcion', formData.descripcion);
-        data.append('precio', formData.precio);
-        data.append('stock', formData.stock);
-        data.append('categoria_id', formData.categoria_id);
-        
-        if (formData.imagen) {
-            data.append('imagen', formData.imagen);
-        }
-
-        try {
-            if (isEdit) {
-                // TRUCO LARAVEL: Para editar con archivos usamos POST y simulamos PUT
-                data.append('_method', 'PUT'); 
-                await axios.post(`http://127.0.0.1:8000/api/empresa/productos/${id}`, data, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
-                alert('¡Producto actualizado con éxito! ✨');
-            } else {
-                await axios.post('http://127.0.0.1:8000/api/empresa/productos', data, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
-                alert('¡Producto creado con éxito! ☕');
-            }
-            navigate('/empresa/productos'); 
-        } catch (error) {
-            console.error("Error al guardar:", error.response?.data);
-            alert('Error al guardar: ' + (error.response?.data?.message || 'Revisa los campos'));
-        } finally {
-            setLoading(false);
         }
     };
 

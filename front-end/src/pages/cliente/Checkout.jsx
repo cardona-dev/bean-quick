@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 
 const Checkout = ({ carrito, setCarrito }) => {
@@ -15,7 +15,7 @@ const Checkout = ({ carrito, setCarrito }) => {
         
         setEnviando(true);
         try {
-            await axios.post('http://127.0.0.1:8000/api/cliente/pedidos/crear', 
+            await api.post('/api/cliente/pedidos/crear', 
                 { direccion },
                 { headers: { Authorization: `Bearer ${token}` } }
             );

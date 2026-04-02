@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api/axios';
 import { 
     FaStore, FaUserCircle, FaChevronDown, FaPlusCircle, FaTimes, 
     FaSave, FaPhone, FaMapMarkerAlt, FaCamera, FaImage, FaBox, 
@@ -71,7 +71,7 @@ const LayoutEmpresa = ({ children, empresa }) => {
         });
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/empresa/update', dataToSend, {
+            const response = await api.post('/api/empresa/update', dataToSend, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${localStorage.getItem('AUTH_TOKEN')}`

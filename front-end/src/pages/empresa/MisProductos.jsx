@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEdit, FaTrash, FaPlus, FaImage, FaExclamationTriangle,FaBox } from 'react-icons/fa';
 
@@ -17,10 +17,10 @@ const MisProductos = () => {
             setLoading(true);
             try {
                 const [resEmpresa, resProductos] = await Promise.all([
-                    axios.get('http://127.0.0.1:8000/api/empresa/dashboard', {
+                    api.get('/api/empresa/dashboard', {
                         headers: { Authorization: `Bearer ${token}` }
                     }),
-                    axios.get('http://127.0.0.1:8000/api/empresa/productos', {
+                    api.get('/api/empresa/productos', {
                         headers: { Authorization: `Bearer ${token}` }
                     })
                 ]);
@@ -41,7 +41,7 @@ const MisProductos = () => {
     const handleEliminar = async (id, nombre) => {
         if (!window.confirm(`¿Estás seguro de que deseas eliminar "${nombre}"?`)) return;
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/empresa/productos/${id}`, {
+            await api.delete(`/api/empresa/productos/${id}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             setProductos(productos.filter(p => p.id !== id));

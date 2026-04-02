@@ -7,7 +7,7 @@ import GranosCafe from '../img/GranosCafe.png'; // ← AGREGAR ESTO AL INICIO CO
 import React, { useState } from 'react';
 
 // axios: herramienta para comunicarnos con el servidor (enviar y recibir datos)
-import axios from 'axios';
+import api from '../../api/axios';
 
 // useNavigate: nos permite cambiar de página dentro de la aplicación
 import { useNavigate } from 'react-router-dom';
@@ -166,8 +166,8 @@ const RegistroEmpresa = () => {
       const token = localStorage.getItem('AUTH_TOKEN');
       
       // Enviamos los datos al servidor
-      const response = await axios.post(
-        'http://127.0.0.1:8000/api/solicitud-empresa', // Dirección del servidor
+      const response = await api.post(
+        '/api/solicitud-empresa', // Dirección del servidor
         data, // Los datos que enviamos
         {
           headers: { 

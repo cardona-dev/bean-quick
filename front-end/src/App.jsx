@@ -1,7 +1,7 @@
 import './index.css';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
-import axios from 'axios';
+import api from './api/axios';
 import './App.css';
 import {
     FaUserCircle, FaStar, FaSignOutAlt, FaUserEdit,
@@ -144,7 +144,7 @@ function App() {
         const token = localStorage.getItem('AUTH_TOKEN');
         if (!token) return;
         try {
-            const res = await axios.get('http://127.0.0.1:8000/api/cliente/carrito', {
+            const res = await api.get('/api/cliente/carrito', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             if (res.data) setCarrito(res.data);
@@ -172,7 +172,7 @@ function App() {
         }
 
         try {
-            const res = await axios.post(`http://127.0.0.1:8000/api/cliente/carrito/agregar/${producto.id}`,
+            const res = await api.post(`/api/cliente/carrito/agregar/${producto.id}`,
                 { cantidad }, { headers: { Authorization: `Bearer ${token}` } }
             );
             if (res.data?.productos) setCarrito(res.data.productos);
@@ -196,7 +196,7 @@ function App() {
     ));
 
     try {
-        await axios.put(`http://127.0.0.1:8000/api/cliente/carrito/actualizar/${productoId}`,
+        await api.put(`/api/cliente/carrito/actualizar/${productoId}`,
             { cantidad: nuevaCantidad }, 
             { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -209,7 +209,7 @@ function App() {
     const eliminarDelCarrito = async (productoId) => {
         const token = localStorage.getItem('AUTH_TOKEN');
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/cliente/carrito/eliminar/${productoId}`, {
+            await api.delete(`/api/cliente/carrito/eliminar/${productoId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setCarrito(prev => prev.filter(p => p.id !== productoId));
@@ -223,8 +223,8 @@ function App() {
     
         try {
             // 1️⃣ Crear pedido
-            const pedidoRes = await axios.post(
-                'http://127.0.0.1:8000/api/cliente/pedidos',
+            const pedidoRes = await api.post(
+                '/api/cliente/pedidos',
                 {
                     direccion,
                     hora_recogida: horaRecogida,
@@ -237,8 +237,8 @@ function App() {
             const pedidoId = pedidoRes.data.pedido.id;
     
             // 2️⃣ Generar preferencia Mercado Pago
-            const pagoRes = await axios.post(
-                `http://127.0.0.1:8000/api/cliente/pedidos/${pedidoId}/pagar`,
+            const pagoRes = await api.post(
+                `/api/cliente/pedidos/${pedidoId}/pagar`,
                 {},
                 { headers: { Authorization: `Bearer ${token}` } }
             );

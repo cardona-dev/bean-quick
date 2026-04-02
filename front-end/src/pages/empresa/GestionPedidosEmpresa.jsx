@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { FaClock, FaCheck, FaBox, FaUser, FaChevronDown, FaChevronUp, FaImage, FaTimesCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
@@ -25,10 +25,10 @@ const GestionPedidosEmpresa = () => {
             try {
                 // Ejecutamos ambas peticiones en paralelo
                 const [resEmpresa, resPedidos] = await Promise.all([
-                    axios.get('http://127.0.0.1:8000/api/empresa/dashboard', {
+                    api.get('/api/empresa/dashboard', {
                         headers: { Authorization: `Bearer ${token}` }
                     }),
-                    axios.get('http://127.0.0.1:8000/api/empresa/pedidos', {
+                    api.get('/api/empresa/pedidos', {
                         headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
                     })
                 ]);
@@ -53,7 +53,7 @@ const GestionPedidosEmpresa = () => {
     const fetchPedidosSolo = async () => {
         const token = localStorage.getItem('AUTH_TOKEN');
         try {
-            const res = await axios.get('http://127.0.0.1:8000/api/empresa/pedidos', {
+            const res = await api.get('/api/empresa/pedidos', {
                 headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
             });
             setPedidos(res.data);
@@ -69,7 +69,7 @@ const GestionPedidosEmpresa = () => {
 
         const token = localStorage.getItem('AUTH_TOKEN');
         try {
-            await axios.patch(`http://127.0.0.1:8000/api/empresa/pedidos/${id}/estado`, 
+            await api.patch(`/api/empresa/pedidos/${id}/estado`, 
                 { estado: nuevoEstado },
                 { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' } }
             );

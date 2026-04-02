@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import { motion } from 'framer-motion';
 import { FaBolt, FaStar, FaLightbulb, FaArrowRight, FaStore } from 'react-icons/fa';
 console.log(motion)
@@ -15,8 +15,8 @@ const Home = () => {
     useEffect(() => {
         const fetchDestacados = async () => {
             try {
-                // Cambiado a la URL de tu API centralizada (ajusta si usas el clienteAxios)
-                const res = await axios.get('http://127.0.0.1:8000/api/productos/destacados');
+                // Usar instancia centralizada de axios (api)
+                const res = await api.get('/api/productos/destacados');
                 setDestacados(res.data);
             } catch (error) {
                 console.error("Error al cargar destacados", error);

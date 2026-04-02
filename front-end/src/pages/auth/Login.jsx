@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 
 // axios: herramienta para comunicarnos con el servidor (como hacer llamadas telefónicas a la base de datos)
-import axios from 'axios';
+import api from '../../api/axios';
 //motion: libreria de animaciones 
 import { motion } from 'framer-motion';
 console.log(motion)
@@ -108,7 +108,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-        const response = await axios.post(`${API_URL}/login`, formData);
+        const response = await api.post(`/api/login`, formData);
 
         const { token, user, status } = response.data;
 
@@ -117,7 +117,7 @@ const Login = () => {
             localStorage.setItem('USER_ROLE', user.rol);
             localStorage.setItem('USER_NAME', user.name);
 
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
             const routes = {
                 cliente: '/cliente/dashboard',

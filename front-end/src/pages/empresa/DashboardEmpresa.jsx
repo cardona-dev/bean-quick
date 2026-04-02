@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api/axios';
 import { FaBoxOpen, FaMoneyBillWave, FaStar, FaExpandAlt, FaTimes } from 'react-icons/fa';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
@@ -40,7 +40,7 @@ const DashboardEmpresa = () => {
 
         setLoading(true);
         try {
-            const response = await axios.get('http://127.0.0.1:8000/api/empresa/dashboard', {
+            const response = await api.get('/api/empresa/dashboard', {
                 headers: { 'Authorization': `Bearer ${token}` },
                 params:  { periodo: periodoActual }
             });
@@ -67,7 +67,7 @@ const DashboardEmpresa = () => {
         setShowFeedbackModal(true);
         const token = localStorage.getItem('AUTH_TOKEN');
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/empresa/calificaciones`, {
+            const response = await api.get(`/api/empresa/calificaciones`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             setCalificaciones(response.data);

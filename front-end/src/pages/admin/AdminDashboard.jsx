@@ -18,7 +18,7 @@ import {
 } from 'react-icons/fa';
 
 import { useState } from 'react'
-import axios from 'axios'
+import api from '../../api/axios'
 import { FaTags } from 'react-icons/fa'
 import { useEffect } from 'react'
 import { FaTrash } from 'react-icons/fa'
@@ -55,7 +55,7 @@ const AdminDashboard = () => {
     const cargarCategorias = async () => {
         setLoadingCategorias(true);
         try {
-            const response = await axios.get('http://127.0.0.1:8000/api/categorias');
+            const response = await api.get('/api/categorias');
             setCategorias(response.data);
         } catch (error) {
             console.error('Error al cargar categorías:', error);
@@ -124,8 +124,8 @@ const AdminDashboard = () => {
                 Accept: 'application/json'
             });
 
-            const response = await axios.post(
-                'http://127.0.0.1:8000/api/admin/categorias',
+            const response = await api.post(
+                '/api/admin/categorias',
                 { nombre: categoriaNombre },
                 {
                     headers: {
@@ -156,8 +156,8 @@ const AdminDashboard = () => {
 
         try {
             const token = localStorage.getItem('AUTH_TOKEN');
-            await axios.delete(
-                `http://127.0.0.1:8000/api/admin/categorias/${id}`,
+            await api.delete(
+                `/api/admin/categorias/${id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,

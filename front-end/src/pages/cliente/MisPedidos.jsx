@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { 
     FaChevronDown, FaChevronUp, FaCoffee, FaClock, 
     FaMapMarkerAlt, FaTimesCircle, FaStar, FaRegStar, FaCheckCircle 
@@ -11,8 +11,8 @@ const MisPedidos = () => {
             const token = localStorage.getItem('AUTH_TOKEN');
             try {
                 // Llamar a la API para generar preferencia de pago
-                const pagoRes = await axios.post(
-                    `http://127.0.0.1:8000/api/cliente/pedidos/${pedido.id}/pagar`,
+                const pagoRes = await api.post(
+                    `/api/cliente/pedidos/${pedido.id}/pagar`,
                     {},
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
@@ -40,7 +40,7 @@ const MisPedidos = () => {
     const fetchPedidos = async () => {
         const token = localStorage.getItem('AUTH_TOKEN');
         try {
-            const res = await axios.get('http://127.0.0.1:8000/api/cliente/mis-pedidos', {
+            const res = await api.get('/api/cliente/mis-pedidos', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setPedidos(res.data);
@@ -57,7 +57,7 @@ const MisPedidos = () => {
         if (!window.confirm("¿Estás seguro de que deseas cancelar este pedido?")) return;
         const token = localStorage.getItem('AUTH_TOKEN');
         try {
-            await axios.post(`http://127.0.0.1:8000/api/cliente/pedidos/${id}/cancelar`, {}, {
+            await api.post(`/api/cliente/pedidos/${id}/cancelar`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setPedidos(pedidos.map(p => p.id === id ? { ...p, estado: 'Cancelado' } : p));
@@ -83,7 +83,7 @@ const MisPedidos = () => {
         setLoadingEnvio(true);
         const token = localStorage.getItem('AUTH_TOKEN');
         try {
-            await axios.post('http://127.0.0.1:8000/api/cliente/calificar', {
+            await api.post('/api/cliente/calificar', {
                 pedido_id: calificando.pedido_id,
                 producto_id: calificando.producto_id,
                 estrellas: calificando.estrellas,

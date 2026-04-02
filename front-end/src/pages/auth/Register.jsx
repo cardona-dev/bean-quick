@@ -1,6 +1,6 @@
 // Importamos las herramientas que necesitamos de React y otras bibliotecas
 import React, { useState } from 'react'; // React y useState nos permiten crear componentes y manejar datos que cambian
-import axios from 'axios'; // axios es como un mensajero que envía y recibe información del servidor
+import api from '../../api/axios'; // axios es como un mensajero que envía y recibe información del servidor
 import { useNavigate } from 'react-router-dom'; // useNavigate nos permite cambiar de página dentro de la aplicación
 import { FaUser, FaEnvelope, FaLock, FaCheckCircle, FaArrowRight, FaCoffee } from 'react-icons/fa'; // Iconos bonitos para decorar la interfaz
 import GranosCafe from '../img/GranosCafe.png';
@@ -100,16 +100,16 @@ const Register = () => {
         setLoading(true);
     
         try {
-            const response = await axios.post(`${API_URL}/register`, formData);
-    
+            const response = await api.post(`/api/register`, formData);
+
             const { token, user, redirectTo } = response.data;
-    
+
             localStorage.setItem('AUTH_TOKEN', token);
             localStorage.setItem('USER_ROLE', user.rol || user.role);
             localStorage.setItem('USER_NAME', user.name);
-    
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    
+
+            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
             if (redirectTo) {
                 navigate(redirectTo);
             } else {

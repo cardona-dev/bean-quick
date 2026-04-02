@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { 
     FaUserEdit, FaTrash, FaSearch, FaUserCircle, 
     FaArrowLeft, FaCheck, FaTimes, FaSpinner, FaEye 
@@ -26,7 +26,7 @@ const AdminUsuarios = () => {
 
     const cargarUsuarios = async () => {
         try {
-            const res = await axios.get('http://127.0.0.1:8000/api/admin/solicitudes', {
+            const res = await api.get('/api/admin/solicitudes', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setUsuarios(res.data.usuarios);
@@ -51,7 +51,7 @@ const AdminUsuarios = () => {
 
         if (confirmar.isConfirmed) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/api/admin/usuarios/${id}`, {
+                await api.delete(`/api/admin/usuarios/${id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setUsuarios(usuarios.filter(u => u.id !== id));
@@ -70,7 +70,7 @@ const AdminUsuarios = () => {
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`http://127.0.0.1:8000/api/admin/usuarios/${usuarioEditando.id}`, usuarioEditando, {
+            await api.put(`/api/admin/usuarios/${usuarioEditando.id}`, usuarioEditando, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setModalAbierto(false);

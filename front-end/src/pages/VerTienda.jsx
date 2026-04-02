@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';
 
 // Agregamos = [] para que si no llega el carrito, el código no rompa
@@ -15,7 +15,7 @@ const VistaTienda = ({ agregarAlCarrito, carrito = [], abrirCarrito }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/cliente/empresa/${id}/productos`);
+                const response = await api.get(`/api/cliente/empresa/${id}/productos`);
                 // Validamos que la respuesta tenga los datos esperados
                 if (response.data) {
                     setEmpresa(response.data.empresa);
