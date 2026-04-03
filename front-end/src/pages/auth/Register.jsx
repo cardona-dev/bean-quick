@@ -111,6 +111,7 @@ const Register = () => {
             api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
             if (redirectTo) {
+                console.log("Registro exitoso:", response.data);
                 navigate(redirectTo);
             } else {
                 const role = user.rol || user.role;
@@ -120,11 +121,21 @@ const Register = () => {
             }
     
         } catch (err) {
-            if (err.response && err.response.status === 422) {
-                setErrors(err.response.data.errors);
+            console.log("ERROR COMPLETO:", err);
+        
+            if (err.response) {
+                console.log("ERROR BACKEND:", err.response.data);
+        
+                if (err.response.status === 422) {
+                    setErrors(err.response.data.errors);
+                } else {
+                    setErrors({
+                        general: err.response.data.message || 'Error del servidor'
+                    });
+                }
             } else {
                 setErrors({
-                    general: 'Error de conexión. Verifica que el servidor Laravel esté corriendo.'
+                    general: 'No se pudo conectar con el servidor'
                 });
             }
         } finally {
