@@ -4,6 +4,8 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use App\Models\User;
+use Illuminate\Support\Facades\URL;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -24,5 +26,8 @@ class AppServiceProvider extends ServiceProvider
         // Retorna true solo si el rol es exactamente 'admin'
         return $user->rol === 'admin';
     });
+
+    URL::forceScheme('https');
+
     }
 }
