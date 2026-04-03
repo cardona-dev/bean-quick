@@ -69,7 +69,11 @@ class RegisteredUserController extends Controller
 
         // 5. CORREO DE BIENVENIDA:
         // Le enviamos un correo al nuevo usuario para darle la bienvenida a BeanQuick.
-        Mail::to($user->email)->send(new BienvenidaMail($user));
+        try {
+    Mail::to($user->email)->send(new BienvenidaMail($user));
+    } catch (\Exception $e) {
+        \Log::error('Error enviando correo: ' . $e->getMessage());
+    }
 
         // 6. LA ENTREGA DE LA LLAVE (Token):
         // Logueamos al usuario automáticamente y le damos su "Token".

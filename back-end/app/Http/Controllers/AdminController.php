@@ -54,7 +54,7 @@ class AdminController extends Controller
         ]);
 
         // 3. Crea la dirección (URL) a la que el usuario debe entrar en el Frontend
-        $link = "http://localhost:5173/empresa/activar/" . $token;
+        $link = env('FRONTEND_URL') . "/empresa/activar/" . $token;
 
         try {
             // 4. Intenta enviar el correo usando la plantilla ActivacionEmpresaMail
