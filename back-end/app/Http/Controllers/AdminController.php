@@ -57,20 +57,15 @@ class AdminController extends Controller
         $link = env('FRONTEND_URL') . "/empresa/activar/" . $token;
 
         try {
-            // 4. Intenta enviar el correo usando la plantilla ActivacionEmpresaMail
             Mail::to($solicitud->correo)->send(new ActivacionEmpresaMail($solicitud, $link));
-
-            return response()->json([
-                'message'   => 'Solicitud aprobada y correo de activación enviado.',
-                'solicitud' => $solicitud
-            ]);
         } catch (\Exception $e) {
-            // Si el correo falla, se informa pero se mantiene la aprobación en la base de datos
-            return response()->json([
-                'message' => 'Solicitud aprobada pero hubo un error al enviar el correo.',
-                'error'   => $e->getMessage()
-            ], 500);
+            \Log::error('Error enviando correo: ' . $e->getMessage());
         }
+        
+        return response()->json([
+            'message'   => 'Solicitud aprobada correctamente.',
+            'solicitud' => $solicitud
+        ]);
     }
 
     /**
