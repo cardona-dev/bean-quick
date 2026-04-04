@@ -34,6 +34,13 @@ use App\Http\Controllers\PagoController;
  * Accesibles sin necesidad de login.
  */
 
+Route::get('/debug-mail', function () {
+    return [
+        'default' => config('mail.default'),
+        'mailers' => config('mail.mailers'),
+    ];
+});
+
 // Catálogo Abierto
 Route::get('/productos/destacados', [ProductoController::class, 'destacados']);
 Route::get('/categorias', function () {
