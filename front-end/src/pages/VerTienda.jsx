@@ -60,7 +60,7 @@ const VistaTienda = ({ agregarAlCarrito, carrito = [], abrirCarrito }) => {
                     backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url(http://127.0.0.1:8000/storage/${empresa.foto_local})`
                 }}>
                     <div style={styles.headerContent}>
-                        <img src={`https://bean-quick-production.up.railway.app/storage/${empresa.logo}`} style={styles.shopLogo} alt={empresa.nombre} />
+                        <img src={`/storage/${empresa.logo}`} style={styles.shopLogo} alt={empresa.nombre} />
                         <div style={styles.headerTexts}>
                             <h1 style={styles.empresaNombre}>{empresa.nombre} - {empresa.direccion}</h1>
                             <p style={styles.empresaSlogan}>Sede Oficial - Menú Digital</p>
