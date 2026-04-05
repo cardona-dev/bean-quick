@@ -27,7 +27,10 @@ class AppServiceProvider extends ServiceProvider
         return $user->rol === 'admin';
     });
 
-    URL::forceScheme('https');
+    if (env('APP_ENV') === 'production') {
+        URL::forceScheme('https');
+        URL::forceRootUrl(env('APP_URL'));
+    }
 
     }
 }
