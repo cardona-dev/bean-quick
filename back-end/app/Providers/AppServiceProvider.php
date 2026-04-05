@@ -27,9 +27,10 @@ class AppServiceProvider extends ServiceProvider
         return $user->rol === 'admin';
     });
 
-    if (env('APP_ENV') === 'production') {
+    // Usamos config() porque en producción con caché env() devuelve null y este bloque se ignora.
+    if (config('app.env') === 'production') {
         URL::forceScheme('https');
-        URL::forceRootUrl(env('APP_URL'));
+        URL::forceRootUrl(config('app.url'));
     }
 
     }
