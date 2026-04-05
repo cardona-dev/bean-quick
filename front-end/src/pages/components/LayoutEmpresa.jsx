@@ -19,10 +19,10 @@ const LayoutEmpresa = ({ children, empresa }) => {
     const menuRef = useRef(null);
 
     const [formData, setFormData] = useState({
-        nombre: '', email: '', telefono: '', direccion: '', descripcion: '', logo: null, imagen: null
+        nombre: '', email: '', telefono: '', direccion: '', descripcion: '', logo: null, foto_local: null
     });
 
-    const [previews, setPreviews] = useState({ logo: null, imagen: null });
+    const [previews, setPreviews] = useState({ logo: null, foto_local: null });
 
     useEffect(() => {
         if (empresa) {
@@ -36,7 +36,7 @@ const LayoutEmpresa = ({ children, empresa }) => {
             }));
             setPreviews({
                 logo: empresa.logo_url || null,
-                imagen: empresa.imagen_url || null
+                foto_local: empresa.foto_local_url || null
             });
         }
     }, [empresa]);
@@ -212,9 +212,9 @@ const LayoutEmpresa = ({ children, empresa }) => {
                                 <div style={styles.coverContainer}>
                                     <label style={styles.labelImage}>Portada</label>
                                     <div style={styles.imagePreviewBox}>
-                                        {previews.imagen ? <img src={previews.imagen} style={styles.fullImg} alt="Portada" /> : <FaImage size={30} color="#cbd5e1" />}
+                                        {previews.foto_local ? <img src={previews.foto_local} style={styles.fullImg} alt="Portada" /> : <FaImage size={30} color="#cbd5e1" />}
                                         <label htmlFor="upload-portada" style={styles.uploadBtnOverlay}><FaCamera /> Cambiar</label>
-                                        <input id="upload-portada" type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => handleImageChange(e, 'imagen')} />
+                                        <input id="upload-portada" type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => handleImageChange(e, 'foto_local')} />
                                     </div>
                                 </div>
                                 <div style={styles.logoContainer}>
