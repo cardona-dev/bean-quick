@@ -57,10 +57,10 @@ const VistaTienda = ({ agregarAlCarrito, carrito = [], abrirCarrito }) => {
             {empresa && (
                 <div style={{
                     ...styles.shopHeader,
-                    backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url(http://127.0.0.1:8000/storage/${empresa.foto_local})`
+                    backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url(${empresa.foto_local_url || 'https://via.placeholder.com/1200x350'})`
                 }}>
                     <div style={styles.headerContent}>
-                        <img src={`/storage/${empresa.logo}`} style={styles.shopLogo} alt={empresa.nombre} />
+                        <img src={empresa.logo_url || 'https://via.placeholder.com/150'} style={styles.shopLogo} alt={empresa.nombre} />
                         <div style={styles.headerTexts}>
                             <h1 style={styles.empresaNombre}>{empresa.nombre} - {empresa.direccion}</h1>
                             <p style={styles.empresaSlogan}>Sede Oficial - Menú Digital</p>
@@ -109,7 +109,7 @@ const VistaTienda = ({ agregarAlCarrito, carrito = [], abrirCarrito }) => {
                             <div key={prod.id} style={{ ...styles.card, opacity: tieneStock ? 1 : 0.9 }}>
                                 <div style={{ position: 'relative' }}>
                                     <img 
-                                        src={prod.imagen ? `http://127.0.0.1:8000/storage/${prod.imagen}` : 'https://via.placeholder.com/150'} 
+                                        src={prod.imagen_url || 'https://via.placeholder.com/150'} 
                                         alt={prod.nombre} 
                                         style={styles.img} 
                                     />
