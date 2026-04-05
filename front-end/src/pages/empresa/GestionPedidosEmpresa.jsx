@@ -165,7 +165,7 @@ const GestionPedidosEmpresa = () => {
                                             <div key={prod.id} style={styles.productRow}>
                                                 <div style={styles.imgWrapper}>
                                                     {prod.imagen ? (
-                                                        <img src={`http://127.0.0.1:8000/storage/${prod.imagen}`} alt={prod.nombre} style={styles.productImg} />
+                                                        <img src={prod.imagen_url} alt={prod.nombre} style={styles.productImg} />
                                                     ) : (
                                                         <div style={styles.noImg}><FaImage /></div>
                                                     )}

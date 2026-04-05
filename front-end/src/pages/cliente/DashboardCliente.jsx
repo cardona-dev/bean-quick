@@ -95,7 +95,7 @@ const DashboardCliente = () => {
                                     )}
 
                                     <img
-                                        src={empresa.logo ? `http://127.0.0.1:8000/storage/${empresa.logo}` : 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=800&auto=format&fit=crop'}
+                                        src={empresa.logo_url || 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=800&auto=format&fit=crop'}
                                         alt={empresa.nombre}
                                         style={{
                                             ...styles.cardImg,

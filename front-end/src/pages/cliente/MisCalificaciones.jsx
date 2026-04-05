@@ -59,7 +59,7 @@ const MisCalificaciones = () => {
                     <div key={cal.id} style={styles.card}>
                         <div style={styles.productSection}>
                             <img 
-                                src={cal.producto?.imagen ? `${import.meta.env.VITE_API_URL}/storage/${cal.producto.imagen}` : 'https://via.placeholder.com/80'} 
+                                src={cal.producto?.imagen_url || 'https://via.placeholder.com/80'} 
                                 alt={cal.producto?.nombre} 
                                 style={styles.img}
                             />

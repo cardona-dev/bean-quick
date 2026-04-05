@@ -101,7 +101,7 @@ const AgregarProducto = () => {
 
                     // Mostramos la imagen actual si existe
                     if (p.imagen) {
-                        setPreview(`${import.meta.env.VITE_API_URL}/storage/${p.imagen}`);
+                        setPreview(p.imagen_url);
                     }
                 }
             } catch (error) {

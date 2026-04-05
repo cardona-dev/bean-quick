@@ -157,7 +157,7 @@ const MisPedidos = () => {
                         <div style={styles.cardHeader} onClick={() => togglePedido(pedido.id)}>
                             <div style={styles.headerMain}>
                                 <div style={styles.brandContainer}>
-                                    <img src={`http://127.0.0.1:8000/storage/${pedido.empresa?.logo}`} alt="Logo" style={styles.brandLogo} />
+                                    <img src={pedido.empresa?.logo_url || 'https://via.placeholder.com/150'} alt="Logo" style={styles.brandLogo} />
                                     <div style={styles.brandInfo}>
                                         <span style={styles.brandName}>{pedido.empresa?.nombre}</span>
                                         <span style={styles.orderId}>Pedido #{pedido.id}</span>
@@ -200,7 +200,7 @@ const MisPedidos = () => {
                                     {pedido.productos.map((prod) => (
                                         <div key={prod.id} style={styles.prodItem}>
                                             <div style={styles.prodLeft}>
-                                                <img src={`http://127.0.0.1:8000/storage/${prod.imagen}`} alt="" style={styles.miniImg} />
+                                                <img src={prod.imagen_url || 'https://via.placeholder.com/150'} alt="" style={styles.miniImg} />
                                                 <div style={styles.prodText}>
                                                     <span style={styles.prodName}>{prod.nombre}</span>
                                                     <span style={styles.prodQty}>Cant: {prod.pivot.cantidad}</span>
