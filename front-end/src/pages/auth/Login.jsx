@@ -21,9 +21,7 @@ import GranosCafe from '../img/GranosCafe.png';
 // CONFIGURACIÓN
 // ========================================
 
-// La dirección del servidor donde está nuestra base de datos
-// Es como la dirección de una casa: sabemos dónde ir a buscar la información
-const API_URL = 'http://127.0.0.1:8000/api';
+// El backend se comunica usando el componente api desde axios.js
 
 // ========================================
 // COMPONENTE PRINCIPAL - Login

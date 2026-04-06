@@ -5,8 +5,7 @@ import { useNavigate } from 'react-router-dom'; // useNavigate nos permite cambi
 import { FaUser, FaEnvelope, FaLock, FaCheckCircle, FaArrowRight, FaCoffee } from 'react-icons/fa'; // Iconos bonitos para decorar la interfaz
 import GranosCafe from '../img/GranosCafe.png';
 
-// Esta es la dirección donde vive nuestro servidor (backend)
-const API_URL = 'http://127.0.0.1:8000/api'; 
+// El backend se comunica usando el componente api desde axios.js
 
 // Este es nuestro componente principal de Registro
 const Register = () => {

@@ -81,8 +81,8 @@ const DashboardEmpresa = () => {
     const descargarReporte = async () => {
         const token = localStorage.getItem('AUTH_TOKEN');
         try {
-            const response = await axios.get(
-                'http://127.0.0.1:8000/api/empresa/dashboard/pdf',
+            const response = await api.get(
+                '/api/empresa/dashboard/pdf',
                 {
                     headers: { Authorization: `Bearer ${token}` },
                     params:  { periodo },
@@ -108,8 +108,8 @@ const DashboardEmpresa = () => {
         setUpdatingStatus(true);
         const token = localStorage.getItem('AUTH_TOKEN');
         try {
-            const response = await axios.post(
-                'http://127.0.0.1:8000/api/empresa/toggle-estado',
+            const response = await api.post(
+                '/api/empresa/toggle-estado',
                 {},
                 { headers: { Authorization: `Bearer ${token}` } }
             );
