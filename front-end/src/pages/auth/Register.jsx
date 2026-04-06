@@ -1,5 +1,5 @@
 // Importamos las herramientas que necesitamos de React y otras bibliotecas
-import React, { useState } from 'react'; // React y useState nos permiten crear componentes y manejar datos que cambian
+import React, { useState, useEffect } from 'react'; // React y useState nos permiten crear componentes y manejar datos que cambian
 import api from '../../api/axios'; // axios es como un mensajero que envía y recibe información del servidor
 import { useNavigate } from 'react-router-dom'; // useNavigate nos permite cambiar de página dentro de la aplicación
 import { FaUser, FaEnvelope, FaLock, FaCheckCircle, FaArrowRight, FaCoffee } from 'react-icons/fa'; // Iconos bonitos para decorar la interfaz
@@ -23,6 +23,14 @@ const Register = () => {
     const [loading, setLoading] = useState(false); // Indica si estamos esperando respuesta del servidor (true/false)
     const [focusedInput, setFocusedInput] = useState(''); // Guarda cuál campo está siendo usado en este momento
     const navigate = useNavigate(); // Herramienta para cambiar de página
+
+    // Responsividad
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     // Esta función se ejecuta cada vez que el usuario escribe en algún campo del formulario
     const handleChange = (e) => {
@@ -144,21 +152,21 @@ const Register = () => {
 
     // Aquí empieza la parte visual (lo que el usuario ve)
     return (
-        <div style={styles.page}>
+        <div style={{ ...styles.page, padding: isMobile ? '10px' : '20px' }}>
             {/* Círculos decorativos de fondo (solo estética) */}
             <div style={styles.bgCircle1} />
             <div style={styles.bgCircle2} />
             <div style={styles.bgCircle3} />
 
-            <div style={styles.container}>
+            <div style={{ ...styles.container, flexDirection: isMobile ? 'column' : 'row' }}>
                 {/* ========== PANEL IZQUIERDO (café, con el logo y beneficios) ========== */}
-                <div style={styles.leftPanel}>
+                <div style={{ ...styles.leftPanel, padding: isMobile ? '40px 20px' : '60px 50px', flex: isMobile ? 'none' : 1 }}>
                     {/* Sección de marca/logo */}
                     <div style={styles.brandSection}>
                         <div style={styles.logoCircle}>
                             <FaCoffee style={styles.logoIcon} /> {/* Icono de taza de café */}
                         </div>
-                        <h1 style={styles.brandTitle}>
+                        <h1 style={{ ...styles.brandTitle, fontSize: isMobile ? '2.2rem' : '2.6rem' }}>
                             Únete a la<br/>Experiencia
                         </h1>
                         <p style={styles.brandTagline}>
@@ -167,8 +175,9 @@ const Register = () => {
                     </div>
 
                     {/* Caja con lista de beneficios */}
-                    <div style={styles.featuresBox}>
-                        <div style={styles.featureItem}>
+                    {!isMobile && (
+                        <div style={styles.featuresBox}>
+                            <div style={styles.featureItem}>
                             <FaCheckCircle style={styles.checkIcon} /> {/* Icono de check ✓ */}
                             <span style={styles.featureText}>Reservas rápidas y sencillas</span>
                         </div>
@@ -185,6 +194,7 @@ const Register = () => {
                             <span style={styles.featureText}>Programa de lealtad</span>
                         </div>
                     </div>
+                    )}
 
                     {/* Banner para usuarios que ya tienen cuenta */}
                     <div style={styles.businessBanner}>
@@ -206,11 +216,11 @@ const Register = () => {
                 </div>
 
                 {/* ========== PANEL DERECHO (blanco, con el formulario) ========== */}
-                <div style={styles.rightPanel}>
+                <div style={{ ...styles.rightPanel, padding: isMobile ? '40px 20px' : '60px 70px', flex: isMobile ? 'none' : 1.3 }}>
                     <div style={styles.formWrapper}>
                         {/* Encabezado del formulario */}
                         <div style={styles.header}>
-                            <h2 style={styles.welcomeTitle}>Crear Cuenta</h2>
+                            <h2 style={{ ...styles.welcomeTitle, fontSize: isMobile ? '2rem' : '2.6rem' }}>Crear Cuenta</h2>
                             <p style={styles.welcomeSubtitle}>Completa tus datos para empezar</p>
                         </div>
 

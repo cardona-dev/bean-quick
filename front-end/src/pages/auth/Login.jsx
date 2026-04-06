@@ -3,7 +3,7 @@
 // ========================================
 
 // React y useState: nos permite crear componentes y manejar datos que cambian
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // axios: herramienta para comunicarnos con el servidor (como hacer llamadas telefónicas a la base de datos)
 import api from '../../api/axios';
@@ -49,6 +49,14 @@ const Login = () => {
 
     // navigate: función para cambiar de página
     const navigate = useNavigate();
+
+    // Responsividad
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     // ========================================
     // FUNCIÓN 1: Cuando el usuario escribe algo
@@ -137,7 +145,7 @@ const Login = () => {
     // PARTE VISUAL - Lo que se muestra en pantalla
     // ========================================
     return (
-        <div style={styles.page}>
+        <div style={{ ...styles.page, padding: isMobile ? '10px' : '20px' }}>
             {/* ========================================
                 DECORACIONES DE FONDO - Círculos decorativos
                 ======================================== */}
@@ -145,11 +153,11 @@ const Login = () => {
             <div style={styles.bgCircle2} /> {/* Círculo mediano abajo-izquierda */}
             <div style={styles.bgCircle3} /> {/* Círculo pequeño en el centro */}
 
-            <div style={styles.container}>
+            <div style={{ ...styles.container, flexDirection: isMobile ? 'column' : 'row' }}>
                 {/* ========================================
                     PANEL IZQUIERDO - Información de la marca
                     ======================================== */}
-                <div style={styles.leftPanel}>
+                <div style={{ ...styles.leftPanel, padding: isMobile ? '40px 20px' : '60px 50px', flex: isMobile ? 'none' : 1 }}>
                     {/* Sección del logo y nombre de la marca */}
                     <div style={styles.brandSection}>
                         {/* Círculo con el ícono de café */}
@@ -157,15 +165,16 @@ const Login = () => {
                             <FaCoffee style={styles.logoIcon} />
                         </div>
                         {/* Nombre de la aplicación */}
-                        <h1 style={styles.brandTitle}>Bean Quick</h1>
+                        <h1 style={{ ...styles.brandTitle, fontSize: isMobile ? '2.2rem' : '2.8rem' }}>Bean Quick</h1>
                         {/* Frase descriptiva */}
                         <p style={styles.brandTagline}>Tu café favorito, a un click de distancia</p>
                     </div>
 
                     {/* Caja con las características del servicio */}
-                    <div style={styles.featuresBox}>
-                        {/* Característica 1 */}
-                        <div style={styles.featureItem}>
+                    {!isMobile && (
+                        <div style={styles.featuresBox}>
+                            {/* Característica 1 */}
+                            <div style={styles.featureItem}>
                             <div style={styles.featureBullet}>✓</div>
                             <span style={styles.featureText}>Entrega en 30 minutos</span>
                         </div>
@@ -180,6 +189,7 @@ const Login = () => {
                             <span style={styles.featureText}>Programa de recompensas</span>
                         </div>
                     </div>
+                    )}
 
                     {/* Banner promocional para empresas */}
                     <div style={styles.businessBanner}>
@@ -198,11 +208,11 @@ const Login = () => {
                 {/* ========================================
                     PANEL DERECHO - FORMULARIO DE LOGIN
                     ======================================== */}
-                <div style={styles.rightPanel}>
+                <div style={{ ...styles.rightPanel, padding: isMobile ? '40px 20px' : '60px 70px', flex: isMobile ? 'none' : 1.3 }}>
                     <div style={styles.formWrapper}>
                         {/* Encabezado de bienvenida */}
                         <div style={styles.header}>
-                            <h2 style={styles.welcomeTitle}>¡Bienvenido de vuelta!</h2>
+                            <h2 style={{ ...styles.welcomeTitle, fontSize: isMobile ? '2rem' : '2.6rem' }}>¡Bienvenido de vuelta!</h2>
                             <p style={styles.welcomeSubtitle}>Inicia sesión para continuar</p>
                         </div>
 
