@@ -10,7 +10,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 // axios: herramienta para comunicarnos con el servidor
-import axios from "axios";
+import api from "../../api/axios";
 
 // ========================================
 // COMPONENTE PRINCIPAL - ActivarCuenta
@@ -55,8 +55,8 @@ const ActivarCuenta = () => {
             try {
                 // Enviamos el token al servidor para verificarlo
                 // Es como mostrar un ticket para confirmar que es válido
-                const res = await axios.get(
-                    `http://127.0.0.1:8000/api/empresa/validar-token/${token}`,
+                const res = await api.get(
+                    `/api/empresa/validar-token/${token}`,
                 );
                 
                 // Si el token es válido, el servidor nos devuelve los datos de la solicitud
@@ -94,7 +94,7 @@ const ActivarCuenta = () => {
             // ENVIAR DATOS AL SERVIDOR
             // ========================================
             // Enviamos el token y las contraseñas al servidor para activar la cuenta
-            await axios.post(`http://127.0.0.1:8000/api/empresa/activar/${token}`, {
+            await api.post(`/api/empresa/activar/${token}`, {
                 token, // Token de activación
                 password, // Contraseña nueva
                 password_confirmation: confirmPassword, // Confirmación de contraseña
@@ -112,7 +112,7 @@ const ActivarCuenta = () => {
             
             // Eliminamos el header de autorización de axios
             // Es como quitar la credencial que llevábamos puesta
-            delete axios.defaults.headers.common['Authorization'];
+            delete api.defaults.headers.common['Authorization'];
 
             // Mostramos mensaje de éxito
             alert("¡Cuenta activada con éxito! Por seguridad, inicia sesión con tus nuevas credenciales.");

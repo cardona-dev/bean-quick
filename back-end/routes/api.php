@@ -34,7 +34,22 @@ use App\Http\Controllers\PagoController;
  * Accesibles sin necesidad de login.
  */
 
+Route::get('/debug-mail', function () {
+    return [
+        'default' => config('mail.default'),
+        'mailers' => config('mail.mailers'),
+    ];
+});
+
 // Catálogo Abierto
+Route::get('/fix-storage', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('storage:link');
+        return 'Symlink creado exitosamente: ' . \Illuminate\Support\Facades\Artisan::output();
+    } catch (\Exception $e) {
+        return 'Error al crear symlink: ' . $e->getMessage();
+    }
+});
 Route::get('/productos/destacados', [ProductoController::class, 'destacados']);
 Route::get('/categorias', function () {
     return App\Models\Categoria::all();

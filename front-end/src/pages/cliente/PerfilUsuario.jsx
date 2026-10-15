@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { FaUser, FaEnvelope, FaIdCard, FaSave, FaUserEdit, FaLock, FaKey, FaAt } from 'react-icons/fa';
 
 const PerfilUsuario = () => {
@@ -17,7 +17,7 @@ const PerfilUsuario = () => {
         const fetchPerfil = async () => {
             const token = localStorage.getItem('AUTH_TOKEN');
             try {
-                const res = await axios.get('http://127.0.0.1:8000/api/user', {
+                const res = await api.get('/api/user', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setUserData({
@@ -50,7 +50,7 @@ const PerfilUsuario = () => {
         }
 
         try {
-            await axios.patch('http://127.0.0.1:8000/api/profile', data, {
+            await api.patch('/api/profile', data, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setMensaje({ tipo: 'success', texto: `¡${tipo.toUpperCase()} actualizado con éxito!` });

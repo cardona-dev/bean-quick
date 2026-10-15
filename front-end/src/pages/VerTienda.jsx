@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';
 
 // Agregamos = [] para que si no llega el carrito, el código no rompa
@@ -12,10 +12,18 @@ const VistaTienda = ({ agregarAlCarrito, carrito = [], abrirCarrito }) => {
     const [filtroNombre, setFiltroNombre] = useState('');
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('todas');
 
+    // Responsividad
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/cliente/empresa/${id}/productos`);
+                const response = await api.get(`/api/cliente/empresa/${id}/productos`);
                 // Validamos que la respuesta tenga los datos esperados
                 if (response.data) {
                     setEmpresa(response.data.empresa);
@@ -57,20 +65,26 @@ const VistaTienda = ({ agregarAlCarrito, carrito = [], abrirCarrito }) => {
             {empresa && (
                 <div style={{
                     ...styles.shopHeader,
-                    backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url(http://127.0.0.1:8000/storage/${empresa.foto_local})`
+                    padding: isMobile ? '20px 5%' : '40px 5%',
+                    justifyContent: isMobile ? 'center' : 'flex-start',
+                    backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url(${empresa.foto_local_url || 'https://via.placeholder.com/1200x350'})`
                 }}>
-                    <div style={styles.headerContent}>
-                        <img src={`http://127.0.0.1:8000/storage/${empresa.logo}`} style={styles.shopLogo} alt={empresa.nombre} />
+                    <div style={{ ...styles.headerContent, flexDirection: isMobile ? 'column' : 'row', textAlign: isMobile ? 'center' : 'left' }}>
+                        <img 
+                            src={empresa.logo_url || 'https://via.placeholder.com/150'} 
+                            style={{ ...styles.shopLogo, width: isMobile ? '90px' : '120px', height: isMobile ? '90px' : '120px' }} 
+                            alt={empresa.nombre} 
+                        />
                         <div style={styles.headerTexts}>
-                            <h1 style={styles.empresaNombre}>{empresa.nombre} - {empresa.direccion}</h1>
-                            <p style={styles.empresaSlogan}>Sede Oficial - Menú Digital</p>
+                            <h1 style={{ ...styles.empresaNombre, fontSize: isMobile ? '24px' : '32px' }}>{empresa.nombre} - {empresa.direccion}</h1>
+                            <p style={{ ...styles.empresaSlogan, fontSize: isMobile ? '14px' : '18px' }}>Sede Oficial - Menú Digital</p>
                         </div>
                     </div>
                 </div>
             )}
 
             <div style={styles.contentWrapper}>
-                <div style={styles.filterBar}>
+                <div style={{ ...styles.filterBar, flexDirection: isMobile ? 'column' : 'row', padding: isMobile ? '15px' : '20px' }}>
                     <input type="text" placeholder="Buscar producto..." style={styles.searchInput} onChange={(e) => setFiltroNombre(e.target.value)} />
                     <select style={styles.select} onChange={(e) => setCategoriaSeleccionada(e.target.value)}>
                         <option value="todas">Todas las categorías</option>
@@ -109,7 +123,7 @@ const VistaTienda = ({ agregarAlCarrito, carrito = [], abrirCarrito }) => {
                             <div key={prod.id} style={{ ...styles.card, opacity: tieneStock ? 1 : 0.9 }}>
                                 <div style={{ position: 'relative' }}>
                                     <img 
-                                        src={prod.imagen ? `http://127.0.0.1:8000/storage/${prod.imagen}` : 'https://via.placeholder.com/150'} 
+                                        src={prod.imagen_url || 'https://via.placeholder.com/150'} 
                                         alt={prod.nombre} 
                                         style={styles.img} 
                                     />

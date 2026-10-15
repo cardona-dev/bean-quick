@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { 
     FaChevronDown, FaChevronUp, FaCoffee, FaClock, 
     FaMapMarkerAlt, FaTimesCircle, FaStar, FaRegStar, FaCheckCircle 
@@ -11,8 +11,8 @@ const MisPedidos = () => {
             const token = localStorage.getItem('AUTH_TOKEN');
             try {
                 // Llamar a la API para generar preferencia de pago
-                const pagoRes = await axios.post(
-                    `http://127.0.0.1:8000/api/cliente/pedidos/${pedido.id}/pagar`,
+                const pagoRes = await api.post(
+                    `/api/cliente/pedidos/${pedido.id}/pagar`,
                     {},
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
@@ -40,7 +40,7 @@ const MisPedidos = () => {
     const fetchPedidos = async () => {
         const token = localStorage.getItem('AUTH_TOKEN');
         try {
-            const res = await axios.get('http://127.0.0.1:8000/api/cliente/mis-pedidos', {
+            const res = await api.get('/api/cliente/mis-pedidos', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setPedidos(res.data);
@@ -57,7 +57,7 @@ const MisPedidos = () => {
         if (!window.confirm("¿Estás seguro de que deseas cancelar este pedido?")) return;
         const token = localStorage.getItem('AUTH_TOKEN');
         try {
-            await axios.post(`http://127.0.0.1:8000/api/cliente/pedidos/${id}/cancelar`, {}, {
+            await api.post(`/api/cliente/pedidos/${id}/cancelar`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setPedidos(pedidos.map(p => p.id === id ? { ...p, estado: 'Cancelado' } : p));
@@ -83,7 +83,7 @@ const MisPedidos = () => {
         setLoadingEnvio(true);
         const token = localStorage.getItem('AUTH_TOKEN');
         try {
-            await axios.post('http://127.0.0.1:8000/api/cliente/calificar', {
+            await api.post('/api/cliente/calificar', {
                 pedido_id: calificando.pedido_id,
                 producto_id: calificando.producto_id,
                 estrellas: calificando.estrellas,
@@ -157,7 +157,7 @@ const MisPedidos = () => {
                         <div style={styles.cardHeader} onClick={() => togglePedido(pedido.id)}>
                             <div style={styles.headerMain}>
                                 <div style={styles.brandContainer}>
-                                    <img src={`http://127.0.0.1:8000/storage/${pedido.empresa?.logo}`} alt="Logo" style={styles.brandLogo} />
+                                    <img src={pedido.empresa?.logo_url || 'https://via.placeholder.com/150'} alt="Logo" style={styles.brandLogo} />
                                     <div style={styles.brandInfo}>
                                         <span style={styles.brandName}>{pedido.empresa?.nombre}</span>
                                         <span style={styles.orderId}>Pedido #{pedido.id}</span>
@@ -200,7 +200,7 @@ const MisPedidos = () => {
                                     {pedido.productos.map((prod) => (
                                         <div key={prod.id} style={styles.prodItem}>
                                             <div style={styles.prodLeft}>
-                                                <img src={`http://127.0.0.1:8000/storage/${prod.imagen}`} alt="" style={styles.miniImg} />
+                                                <img src={prod.imagen_url || 'https://via.placeholder.com/150'} alt="" style={styles.miniImg} />
                                                 <div style={styles.prodText}>
                                                     <span style={styles.prodName}>{prod.nombre}</span>
                                                     <span style={styles.prodQty}>Cant: {prod.pivot.cantidad}</span>

@@ -29,7 +29,7 @@ const CarritoFlotante = ({ carrito, setCarrito, actualizarCantidad, confirmarPed
             acc[empresaId] = {
                 id: empresaId,
                 nombre: nombreEmpresa,
-                logo: producto.empresa?.logo ? `http://127.0.0.1:8000/storage/${producto.empresa.logo}` : null,
+                logo: producto.empresa?.logo_url || null,
                 productos: []
             };
         }
@@ -161,7 +161,7 @@ const CarritoFlotante = ({ carrito, setCarrito, actualizarCantidad, confirmarPed
     return (
         <div key={prod.id} style={styles.productoFila}>
             <img 
-                src={prod.imagen ? `http://127.0.0.1:8000/storage/${prod.imagen}` : '/placeholder.jpg'} 
+                src={prod.imagen_url || '/placeholder.jpg'} 
                 style={styles.prodImg} 
                 alt={prod.nombre}
             />
@@ -310,7 +310,7 @@ const CarritoFlotante = ({ carrito, setCarrito, actualizarCantidad, confirmarPed
                                     return (
                                         <div key={prod.id} style={styles.modalProductoItem}>
                                             <img 
-                                                src={prod.imagen ? `http://127.0.0.1:8000/storage/${prod.imagen}` : '/placeholder.jpg'} 
+                                                src={prod.imagen_url || '/placeholder.jpg'} 
                                                 style={styles.modalProdImg} 
                                                 alt={prod.nombre}
                                             />

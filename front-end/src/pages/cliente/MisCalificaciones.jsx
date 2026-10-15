@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { FaStar, FaStore, FaTrash, FaEdit, FaSave, FaTimes } from 'react-icons/fa';
 
 const MisCalificaciones = () => {
@@ -12,7 +12,7 @@ const MisCalificaciones = () => {
     const fetchCalificaciones = async () => {
         const token = localStorage.getItem('AUTH_TOKEN');
         try {
-            const res = await axios.get('http://127.0.0.1:8000/api/cliente/mis-calificaciones', {
+            const res = await api.get('/api/cliente/mis-calificaciones', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setCalificaciones(res.data);
@@ -42,7 +42,7 @@ const MisCalificaciones = () => {
     const handleDelete = async (id) => {
         if (!window.confirm("¿Estás seguro de eliminar esta reseña?")) return;
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/cliente/calificaciones/${id}`, {
+            await api.delete(`/api/cliente/calificaciones/${id}`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('AUTH_TOKEN')}` }
             });
             fetchCalificaciones();
@@ -56,7 +56,7 @@ const MisCalificaciones = () => {
 
     const handleUpdate = async (id) => {
         try {
-            await axios.patch(`http://127.0.0.1:8000/api/cliente/calificaciones/${id}`, editForm, {
+            await api.patch(`/api/cliente/calificaciones/${id}`, editForm, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('AUTH_TOKEN')}` }
             });
             setEditingId(null);
@@ -74,7 +74,7 @@ const MisCalificaciones = () => {
                     <div key={cal.id} style={styles.card}>
                         <div style={styles.productSection}>
                             <img 
-                                src={cal.producto?.imagen ? `http://127.0.0.1:8000/storage/${cal.producto.imagen}` : 'https://via.placeholder.com/80'} 
+                                src={cal.producto?.imagen_url || 'https://via.placeholder.com/80'} 
                                 alt={cal.producto?.nombre} 
                                 style={styles.img}
                             />

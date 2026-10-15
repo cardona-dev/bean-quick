@@ -42,33 +42,34 @@ class AdminController extends Controller
      */
     public function aprobar($id): JsonResponse
     {
-        $solicitud = SolicitudEmpresa::findOrFail($id);
-
-        // 1. Genera una cadena de texto aleatoria de 60 caracteres como medida de seguridad
-        $token = Str::random(60);
-
-        // 2. Guarda el estado como 'aprobado' y almacena el token generado
-        $solicitud->update([
-            'estado' => 'aprobado',
-            'token'  => $token 
-        ]);
-
-        // 3. Crea la dirección (URL) a la que el usuario debe entrar en el Frontend
-        $link = "http://localhost:5173/empresa/activar/" . $token;
-
         try {
-            // 4. Intenta enviar el correo usando la plantilla ActivacionEmpresaMail
-            Mail::to($solicitud->correo)->send(new ActivacionEmpresaMail($solicitud, $link));
-
+            $solicitud = SolicitudEmpresa::findOrFail($id);
+    
+            $token = Str::random(60);
+    
+            $solicitud->update([
+                'estado' => 'aprobado',
+                'token'  => $token 
+            ]);
+    
+            $link = "https://beanquick.vercel.app/empresa/activar/" . $token;
+    
+            try {
+                Mail::to($solicitud->correo)->send(new ActivacionEmpresaMail($solicitud, $link));
+            } catch (\Exception $e) {
+                \Log::error('MAIL ERROR: ' . $e->getMessage());
+            }
+    
             return response()->json([
-                'message'   => 'Solicitud aprobada y correo de activación enviado.',
+                'message' => 'OK TODO BIEN',
                 'solicitud' => $solicitud
             ]);
+    
         } catch (\Exception $e) {
-            // Si el correo falla, se informa pero se mantiene la aprobación en la base de datos
+            \Log::error('ERROR GENERAL: ' . $e->getMessage());
+    
             return response()->json([
-                'message' => 'Solicitud aprobada pero hubo un error al enviar el correo.',
-                'error'   => $e->getMessage()
+                'error' => $e->getMessage()
             ], 500);
         }
     }

@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'empresa' => \App\Http\Middleware\IsEmpresa::class,
             'cliente' => \App\Http\Middleware\IsCliente::class,
         ]);
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

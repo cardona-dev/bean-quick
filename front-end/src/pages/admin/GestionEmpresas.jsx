@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { FaTrash, FaBuilding, FaArrowLeft, FaSearch, FaEdit, FaSave, FaTimes, FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -23,7 +23,7 @@ const GestionEmpresas = () => {
 
     const cargarEmpresas = async () => {
         try {
-            const res = await axios.get('http://127.0.0.1:8000/api/admin/empresas', {
+            const res = await api.get('/api/admin/empresas', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setEmpresas(res.data);
@@ -49,7 +49,7 @@ const GestionEmpresas = () => {
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`http://127.0.0.1:8000/api/admin/empresas/${editando.id}`, editando, {
+            await api.put(`/api/admin/empresas/${editando.id}`, editando, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             Swal.fire('¡Éxito!', 'Empresa actualizada correctamente', 'success');
@@ -72,7 +72,7 @@ const GestionEmpresas = () => {
 
         if (confirmar.isConfirmed) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/api/admin/empresas/${id}`, {
+                await api.delete(`/api/admin/empresas/${id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setEmpresas(empresas.filter(e => e.id !== id));

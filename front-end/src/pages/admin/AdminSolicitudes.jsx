@@ -6,7 +6,7 @@
 import React, { useEffect, useState } from 'react';
 
 // axios: herramienta para comunicarnos con el servidor
-import axios from 'axios';
+import api from '../../api/axios';
 
 // useNavigate: función para cambiar de página
 import { useNavigate } from 'react-router-dom';
@@ -63,7 +63,7 @@ const AdminSolicitudes = () => {
     const fetchSolicitudes = async () => {
         try {
             // Hacemos una petición GET al servidor para obtener las solicitudes
-            const response = await axios.get('http://127.0.0.1:8000/api/admin/solicitudes', {
+            const response = await api.get('/api/admin/solicitudes', {
                 headers: { 
                     Authorization: `Bearer ${token}` // Enviamos el token para autenticarnos
                 }
@@ -98,8 +98,8 @@ const AdminSolicitudes = () => {
         
         try {
             // Enviamos una petición POST al servidor para aprobar
-            await axios.post(
-                `http://127.0.0.1:8000/api/admin/aprobar/${id}`, // URL con el ID
+            await api.post(
+                `/api/admin/aprobar/${id}`, // URL con el ID
                 {}, // Cuerpo vacío (no necesitamos enviar datos adicionales)
                 {
                     headers: { 
@@ -136,8 +136,8 @@ const AdminSolicitudes = () => {
         
         try {
             // Enviamos una petición POST al servidor para rechazar
-            await axios.post(
-                `http://127.0.0.1:8000/api/admin/rechazar/${id}`, // URL con el ID
+            await api.post(
+                `/api/admin/rechazar/${id}`, // URL con el ID
                 {}, // Cuerpo vacío
                 {
                     headers: { 

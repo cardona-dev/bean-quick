@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import api from '../api/axios';
+import { motion } from 'motion/react';
+import { FaBolt, FaStar, FaLightbulb, FaArrowRight, FaStore } from 'react-icons/fa';
 import { Heading } from '../components/atoms/Heading';
 import { Badge } from '../components/atoms/Badge';
 import { PrimaryCta } from '../components/molecules/PrimaryCta';
@@ -11,7 +14,6 @@ import { OrderJourney } from '../components/organisms/OrderJourney';
 import { FeaturedShelf } from '../components/organisms/FeaturedShelf';
 import { menuTarget } from '../domain/orderRules';
 import '../styles/home.css';
-
 const Home = () => {
     const [destacados, setDestacados] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -23,14 +25,13 @@ const Home = () => {
 
         const fetchDestacados = async () => {
             try {
-                const res = await axios.get('http://127.0.0.1:8000/api/productos/destacados', {
-                    timeout: 2500,
-                });
+                const res = await api.get('/api/productos/destacados', { timeout: 2500 });
                 if (!cancelled) {
                     setDestacados(Array.isArray(res.data) ? res.data : []);
                     setCatalogDown(false);
                 }
-            } catch {
+            } catch (error) {
+                console.error("Error al cargar destacados", error);
                 if (!cancelled) {
                     setDestacados([]);
                     setCatalogDown(true);

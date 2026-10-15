@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api/axios';
 import { 
     FaStore, FaUserCircle, FaChevronDown, FaPlusCircle, FaTimes, 
     FaSave, FaPhone, FaMapMarkerAlt, FaCamera, FaImage, FaBox, 
@@ -25,12 +25,14 @@ const LayoutEmpresa = ({ children, empresa }) => {
         direccion: empresa?.direccion || '',
         descripcion: empresa?.descripcion || '',
         logo: null,
-        imagen: null
+        imagen: null,
+        foto_local: null
     });
 
     const [previews, setPreviews] = useState({
         logo: empresa?.logo_url || null,
-        imagen: empresa?.imagen_url || null
+        imagen: empresa?.imagen_url || null,
+        foto_local: null
     });
     const [seenEmpresa, setSeenEmpresa] = useState(empresa);
 
@@ -47,7 +49,7 @@ const LayoutEmpresa = ({ children, empresa }) => {
             }));
             setPreviews({
                 logo: empresa.logo_url || null,
-                imagen: empresa.imagen_url || null
+                foto_local: empresa.foto_local_url || null
             });
         }
     }
@@ -82,7 +84,7 @@ const LayoutEmpresa = ({ children, empresa }) => {
         });
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/empresa/update', dataToSend, {
+            const response = await api.post('/api/empresa/update', dataToSend, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${localStorage.getItem('AUTH_TOKEN')}`
@@ -205,9 +207,9 @@ const LayoutEmpresa = ({ children, empresa }) => {
                                 <div style={styles.coverContainer}>
                                     <label style={styles.labelImage}>Portada</label>
                                     <div style={styles.imagePreviewBox}>
-                                        {previews.imagen ? <img src={previews.imagen} style={styles.fullImg} alt="Portada" /> : <FaImage size={30} color="#cbd5e1" />}
+                                        {previews.foto_local ? <img src={previews.foto_local} style={styles.fullImg} alt="Portada" /> : <FaImage size={30} color="#cbd5e1" />}
                                         <label htmlFor="upload-portada" style={styles.uploadBtnOverlay}><FaCamera /> Cambiar</label>
-                                        <input id="upload-portada" type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => handleImageChange(e, 'imagen')} />
+                                        <input id="upload-portada" type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => handleImageChange(e, 'foto_local')} />
                                     </div>
                                 </div>
                                 <div style={styles.logoContainer}>
