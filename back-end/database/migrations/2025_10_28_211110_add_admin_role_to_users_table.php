@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::getConnection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
         Schema::table('users', function (Blueprint $table) {
             $table->enum('rol', ['admin', 'empresa', 'cliente'])->default('cliente')->change();
-      });
-
+        });
     }
 
     /**

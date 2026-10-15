@@ -77,7 +77,7 @@ Route::middleware('auth:sanctum')->group(function () {
      * --- ROL: ADMIN ---
      * Gestión de solicitudes de empresas y mantenimiento de categorías.
     */
-    Route::group(['prefix' => 'admin'], function () {
+    Route::middleware('admin')->prefix('admin')->group(function () {
         Route::get('/solicitudes', [AdminController::class, 'dashboard']);
         Route::post('/aprobar/{id}', [AdminController::class, 'aprobar']);
         Route::post('/rechazar/{id}', [AdminController::class, 'rechazar']);
@@ -105,7 +105,7 @@ Route::middleware('auth:sanctum')->group(function () {
      * --- ROL: EMPRESA ---
      * Gestión de inventario, pedidos recibidos y métricas del negocio.
             */
-    Route::prefix('empresa')->group(function () {
+    Route::middleware('empresa')->prefix('empresa')->group(function () {
         // Perfil de Negocio
         Route::get('/perfil', [EmpresaController::class, 'show']);
         Route::post('/update', [EmpresaController::class, 'update']);
@@ -131,7 +131,7 @@ Route::middleware('auth:sanctum')->group(function () {
      * --- ROL: CLIENTE ---
      * Experiencia de compra, carrito y gestión de sus propias reseñas.
      */
-    Route::prefix('cliente')->group(function () {
+    Route::middleware('cliente')->prefix('cliente')->group(function () {
         // Exploración de Tiendas
         Route::get('/empresas', [ClienteController::class, 'indexEmpresas']);
         Route::get('/empresa/{id}', [ClienteController::class, 'showEmpresa']);

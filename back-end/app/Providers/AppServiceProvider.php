@@ -4,6 +4,8 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use App\Models\User;
+use App\Payments\MercadoPagoPaymentLookup;
+use App\Payments\PaymentLookup;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -11,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(PaymentLookup::class, MercadoPagoPaymentLookup::class);
     }
 
     /**

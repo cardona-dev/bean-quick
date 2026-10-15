@@ -89,7 +89,7 @@ h1 span {
 
 /* Estilo de los enlaces individuales */
 .nav_items .link {
-    color: var(--blanco);
+    color: #3e2723;
     text-decoration: none;
     padding: 1rem 2rem; 
     margin: 0 1rem; 
@@ -109,6 +109,7 @@ h1 span {
 /* Estilo para el último enlace (Registro) */
 .nav_items .link:last-of-type {
     background-color: var(--secundario);
+    color: #fff;
 }
 
 .nav_items .link:last-of-type:hover {

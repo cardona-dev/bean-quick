@@ -228,7 +228,12 @@ public function store(Request $request): JsonResponse
     ]);
 
     try {
-        $pedido = Pedido::findOrFail($id);
+        $empresa = Empresa::where('user_id', Auth::id())->first();
+        $pedido = Pedido::find($id);
+
+        if (!$empresa || !$pedido || (int) $pedido->empresa_id !== (int) $empresa->id) {
+            return response()->json(['message' => 'No autorizado.'], 403);
+        }
 
         // BLOQUEO: no permitir modificar si no está pagado
                 if ($pedido->estado_pago !== 'aprobado') {

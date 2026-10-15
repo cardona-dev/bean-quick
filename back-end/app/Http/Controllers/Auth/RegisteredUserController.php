@@ -44,11 +44,10 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255', 'regex:/^[^<>{}\/]*$/'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
             'password' => [
-                'required', 
-                'confirmed', 
+                'required',
+                'confirmed',
                 Password::min(8)->mixedCase()->numbers()
             ],
-            'rol' => ['required', 'in:empresa,cliente,admin'],
         ]);
 
         // 3. EL NACIMIENTO DEL USUARIO:
@@ -59,7 +58,7 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'rol' => $request->rol,
+            'rol' => 'cliente',
         ]);
 
         // 4. EL AVISO AL SISTEMA:
@@ -80,12 +79,7 @@ class RegisteredUserController extends Controller
         // 7. EL MAPA:
         // Decidimos a dónde mandarlo según quién sea. 
         // Si es empresa, va a su panel; si es admin, a su oficina; si es cliente, a la tienda.
-        $redirectTo = '/'; 
-        if ($user->rol === 'empresa') {
-            $redirectTo = '/empresa/panel';
-        } elseif ($user->rol === 'admin') {
-            $redirectTo = '/admin/dashboard';
-        }
+        $redirectTo = '/';
 
         // 8. RESPUESTA FINAL:
         // Le enviamos a React todo el "kit de bienvenida" en un paquete JSON limpio.

@@ -15,7 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
         Barryvdh\DomPDF\ServiceProvider::class,
     ])
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'admin' => \App\Http\Middleware\IsAdmin::class,
+            'empresa' => \App\Http\Middleware\IsEmpresa::class,
+            'cliente' => \App\Http\Middleware\IsCliente::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

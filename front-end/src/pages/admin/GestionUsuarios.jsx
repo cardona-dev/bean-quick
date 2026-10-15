@@ -56,7 +56,7 @@ const AdminUsuarios = () => {
                 });
                 setUsuarios(usuarios.filter(u => u.id !== id));
                 Swal.fire('Eliminado', 'El usuario ha sido borrado.', 'success');
-            } catch (error) {
+            } catch {
                 Swal.fire('Error', 'No se pudo eliminar el usuario.', 'error');
             }
         }
@@ -76,7 +76,7 @@ const AdminUsuarios = () => {
             setModalAbierto(false);
             cargarUsuarios();
             Swal.fire('Actualizado', 'Usuario modificado con éxito', 'success');
-        } catch (error) {
+        } catch {
             Swal.fire('Error', 'Error al actualizar datos', 'error');
         }
     };
@@ -85,6 +85,10 @@ const AdminUsuarios = () => {
         u.name.toLowerCase().includes(busqueda.toLowerCase()) || 
         u.email.toLowerCase().includes(busqueda.toLowerCase())
     );
+
+    if (loading) {
+        return <div style={styles.container}>Cargando usuarios...</div>;
+    }
 
     return (
         <div style={styles.container}>

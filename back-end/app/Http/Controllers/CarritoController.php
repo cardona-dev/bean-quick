@@ -46,7 +46,17 @@ class CarritoController extends Controller
     
         $user = Auth::user();
         $carrito = Carrito::firstOrCreate(['user_id' => $user->id]);
-        
+
+        $otraCafeteria = $carrito->productos()
+            ->where('productos.empresa_id', '!=', $producto->empresa_id)
+            ->exists();
+
+        if ($otraCafeteria) {
+            return response()->json([
+                'message' => 'Solo puedes agregar productos de una sola cafetería. Vacía el carrito para cambiar de empresa.',
+            ], 422);
+        }
+
         $carritoProducto = $carrito->productos()->where('producto_id', $productoId)->first();
         $cantidadActual = $carritoProducto ? $carritoProducto->pivot->cantidad : 0;
         $nuevaCantidad = $cantidadActual + $request->cantidad;

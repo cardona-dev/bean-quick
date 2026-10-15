@@ -7,9 +7,9 @@ import React, { useState } from 'react';
 
 // axios: herramienta para comunicarnos con el servidor (como hacer llamadas telefónicas a la base de datos)
 import axios from 'axios';
-//motion: libreria de animaciones 
-import { motion } from 'framer-motion';
-console.log(motion)
+import { motion } from 'motion/react';
+
+const MotionButton = motion.button;
 // useNavigate: nos permite cambiar de página dentro de la aplicación
 import { useNavigate,Link } from 'react-router-dom';
 
@@ -186,14 +186,14 @@ const Login = () => {
                     {/* Banner promocional para empresas */}
                     <div style={styles.businessBanner}>
     <p style={styles.businessQuestion}>¿Eres una empresa?</p>
-    <motion.button 
+    <MotionButton
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         style={styles.businessBtn}
-        onClick={() => navigate('/solicitud-empresa')} // <-- Aquí la ruta de tu página
+        onClick={() => navigate('/solicitud-empresa')}
     >
         Únete ahora →
-    </motion.button>
+    </MotionButton>
 </div>
                 </div>
 

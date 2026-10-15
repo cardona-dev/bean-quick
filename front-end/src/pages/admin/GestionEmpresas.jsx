@@ -55,7 +55,7 @@ const GestionEmpresas = () => {
             Swal.fire('¡Éxito!', 'Empresa actualizada correctamente', 'success');
             setModalAbierto(false);
             cargarEmpresas();
-        } catch (error) {
+        } catch {
             Swal.fire('Error', 'No se pudieron guardar los cambios', 'error');
         }
     };
@@ -77,7 +77,7 @@ const GestionEmpresas = () => {
                 });
                 setEmpresas(empresas.filter(e => e.id !== id));
                 Swal.fire('Eliminado', 'La empresa ha sido borrada', 'success');
-            } catch (error) {
+            } catch {
                 Swal.fire('Error', 'Hubo un problema al eliminar', 'error');
             }
         }

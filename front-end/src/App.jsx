@@ -25,7 +25,8 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminSolicitudes from './pages/admin/AdminSolicitudes';
 import MisPedidos from './pages/cliente/MisPedidos';
 import GestionPedidosEmpresa from './pages/empresa/GestionPedidosEmpresa';
-import Footer from './pages/components/common/Footer';  
+import Footer from './pages/components/common/Footer';
+import { canAddProductToCart } from './domain/orderRules';  
 // Nuevas páginas (Deberás crearlas a continuación)
 import MisCalificaciones from './pages/cliente/MisCalificaciones';
 import PerfilUsuario from './pages/cliente/PerfilUsuario';
@@ -161,14 +162,9 @@ function App() {
         const token = localStorage.getItem('AUTH_TOKEN');
         if (!token) { alert("Debes iniciar sesión"); return; }
 
-        // Validar empresa única en el carrito
-        if (carrito.length > 0) {
-            const empresaActual = carrito[0].empresa_id || carrito[0].empresa?.id;
-            const empresaProducto = producto.empresa_id || producto.empresa?.id;
-            if (empresaActual !== empresaProducto) {
-                alert("Solo puedes agregar productos de una sola cafetería. Vacía el carrito para cambiar de empresa.");
-                return;
-            }
+        if (!canAddProductToCart(carrito, producto)) {
+            alert("Solo puedes agregar productos de una sola cafetería. Vacía el carrito para cambiar de empresa.");
+            return;
         }
 
         try {

@@ -70,6 +70,9 @@ class ProductoController extends Controller
         ]);
 
         $empresa = $this->getEmpresaAutenticada();
+        if (!$empresa) {
+            return response()->json(['message' => 'No autorizado.'], 403);
+        }
 
         $producto = new Producto();
         $producto->nombre = $request->nombre;
@@ -96,9 +99,14 @@ class ProductoController extends Controller
      */public function update(Request $request, $id): JsonResponse
 {
     $empresa = $this->getEmpresaAutenticada();
-    $producto = Producto::where('id', $id)->where('empresa_id', $empresa->id)->first();
+    if (!$empresa) {
+        return response()->json(['message' => 'No autorizado.'], 403);
+    }
 
-    if (!$producto) return response()->json(['message' => 'No encontrado'], 404);
+    $producto = Producto::find($id);
+    if (!$producto || (int) $producto->empresa_id !== (int) $empresa->id) {
+        return response()->json(['message' => 'No autorizado.'], 403);
+    }
 
     // DEBUG: Agrega esta línea temporalmente para ver en los logs qué está llegando
     // \Log::info($request->all()); 
@@ -135,9 +143,12 @@ class ProductoController extends Controller
     public function destroy($id): JsonResponse
     {
         $empresa = $this->getEmpresaAutenticada();
-        $producto = Producto::where('id', $id)->where('empresa_id', $empresa->id)->first();
+        if (!$empresa) {
+            return response()->json(['message' => 'No autorizado.'], 403);
+        }
 
-        if (!$producto) {
+        $producto = Producto::find($id);
+        if (!$producto || (int) $producto->empresa_id !== (int) $empresa->id) {
             return response()->json(['message' => 'No autorizado.'], 403);
         }
 

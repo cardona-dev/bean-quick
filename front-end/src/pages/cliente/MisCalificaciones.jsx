@@ -22,7 +22,22 @@ const MisCalificaciones = () => {
         }
     };
 
-    useEffect(() => { fetchCalificaciones(); }, []);
+    useEffect(() => {
+        const token = localStorage.getItem('AUTH_TOKEN');
+        let cancelled = false;
+        axios.get('http://127.0.0.1:8000/api/cliente/mis-calificaciones', {
+            headers: { Authorization: `Bearer ${token}` }
+        }).then((res) => {
+            if (cancelled) return;
+            setCalificaciones(res.data);
+            setLoading(false);
+        }).catch((error) => {
+            console.error('Error', error);
+        });
+        return () => {
+            cancelled = true;
+        };
+    }, []);
 
     const handleDelete = async (id) => {
         if (!window.confirm("¿Estás seguro de eliminar esta reseña?")) return;

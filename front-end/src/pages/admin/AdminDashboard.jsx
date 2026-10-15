@@ -116,6 +116,7 @@ const AdminDashboard = () => {
     const crearCategoria = async () => {
         if (!categoriaNombre.trim()) return;
 
+        setLoadingCategoria(true);
         try {
             const token = localStorage.getItem('AUTH_TOKEN');
             console.log('Token:', token);
@@ -145,6 +146,8 @@ const AdminDashboard = () => {
             console.error('Data:', error.response?.data);
             console.error('Headers enviados:', error.config?.headers);
             alert(`Error: ${error.response?.data?.message || 'No autorizado o error del servidor'}`);
+        } finally {
+            setLoadingCategoria(false);
         }
     };
 

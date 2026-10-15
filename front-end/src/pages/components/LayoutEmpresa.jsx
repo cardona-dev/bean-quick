@@ -19,12 +19,23 @@ const LayoutEmpresa = ({ children, empresa }) => {
     const menuRef = useRef(null);
 
     const [formData, setFormData] = useState({
-        nombre: '', email: '', telefono: '', direccion: '', descripcion: '', logo: null, imagen: null
+        nombre: empresa?.nombre || '',
+        email: empresa?.email || '',
+        telefono: empresa?.telefono || '',
+        direccion: empresa?.direccion || '',
+        descripcion: empresa?.descripcion || '',
+        logo: null,
+        imagen: null
     });
 
-    const [previews, setPreviews] = useState({ logo: null, imagen: null });
+    const [previews, setPreviews] = useState({
+        logo: empresa?.logo_url || null,
+        imagen: empresa?.imagen_url || null
+    });
+    const [seenEmpresa, setSeenEmpresa] = useState(empresa);
 
-    useEffect(() => {
+    if (empresa !== seenEmpresa) {
+        setSeenEmpresa(empresa);
         if (empresa) {
             setFormData(prev => ({
                 ...prev,
@@ -39,7 +50,7 @@ const LayoutEmpresa = ({ children, empresa }) => {
                 imagen: empresa.imagen_url || null
             });
         }
-    }, [empresa]);
+    }
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -82,27 +93,9 @@ const LayoutEmpresa = ({ children, empresa }) => {
                 setShowModal(false);
                 window.location.reload(); 
             }
-        } catch (error) {
+        } catch {
             alert("Error al actualizar");
         }
-    };
-
-    // Componente de Link Adaptable
-    const NavLinkItem = ({ to, icon, text }) => {
-        const active = location.pathname === to;
-        return (
-            <li style={{ marginBottom: '8px' }}>
-                <Link to={to} title={isCollapsed ? text : ""} style={{
-                    ...styles.linkText,
-                    ...(active ? styles.linkActive : {}),
-                    justifyContent: isCollapsed ? 'center' : 'flex-start',
-                    padding: isCollapsed ? '12px 0' : '12px 15px',
-                }}>
-                    <span style={{ fontSize: '18px', display: 'flex' }}>{icon}</span>
-                    {!isCollapsed && <span style={{ transition: '0.3s' }}>{text}</span>}
-                </Link>
-            </li>
-        );
     };
 
     return (
@@ -140,9 +133,9 @@ const LayoutEmpresa = ({ children, empresa }) => {
                         {isCollapsed ? '---' : 'GESTIÓN'}
                     </p>
                     <ul style={{ listStyle: 'none', padding: 0 }}>
-                        <NavLinkItem to="/empresa/panel" icon={<FaChartLine />} text="Inicio" />
-                        <NavLinkItem to="/empresa/pedidos" icon={<FaBox />} text="Pedidos" />
-                        <NavLinkItem to="/empresa/productos" icon={<FaStore />} text="Mis Productos" />
+                        <NavLinkItem to="/empresa/panel" icon={<FaChartLine />} text="Inicio" collapsed={isCollapsed} pathname={location.pathname} />
+                        <NavLinkItem to="/empresa/pedidos" icon={<FaBox />} text="Pedidos" collapsed={isCollapsed} pathname={location.pathname} />
+                        <NavLinkItem to="/empresa/productos" icon={<FaStore />} text="Mis Productos" collapsed={isCollapsed} pathname={location.pathname} />
                     </ul>
                 </nav>
 
@@ -284,5 +277,22 @@ const styles = {
     textarea: { width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid #e2e8f0', fontSize: '13px', resize: 'none' },
     btnGuardar: { width: '100%', padding: '12px', background: '#6f4e37', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', marginTop: '15px' }
 };
+
+function NavLinkItem({ to, icon, text, collapsed, pathname }) {
+    const active = pathname === to;
+    return (
+        <li style={{ marginBottom: '8px' }}>
+            <Link to={to} title={collapsed ? text : ''} style={{
+                ...styles.linkText,
+                ...(active ? styles.linkActive : {}),
+                justifyContent: collapsed ? 'center' : 'flex-start',
+                padding: collapsed ? '12px 0' : '12px 15px',
+            }}>
+                <span style={{ fontSize: '18px', display: 'flex' }}>{icon}</span>
+                {!collapsed && <span style={{ transition: '0.3s' }}>{text}</span>}
+            </Link>
+        </li>
+    );
+}
 
 export default LayoutEmpresa;

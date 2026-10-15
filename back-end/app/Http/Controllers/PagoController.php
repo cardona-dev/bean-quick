@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pedido;
+use App\Payments\MercadoPagoSignature;
+use App\Payments\PaymentLookup;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use MercadoPago\Client\Preference\PreferenceClient;
 use MercadoPago\MercadoPagoConfig;
-use MercadoPago\Client\Payment\PaymentClient;
 
 class PagoController extends Controller
 {
@@ -58,123 +61,86 @@ class PagoController extends Controller
         ]);
     }
 
-    public function webhook(Request $request)
+    public function webhook(Request $request, MercadoPagoSignature $signature, PaymentLookup $payments)
     {
-        \Log::info('WEBHOOK RECIBIDO:', $request->all());
+        if (!$signature->valid($request)) {
+            Log::warning('Webhook Mercado Pago rechazado: firma inválida', [
+                'ip' => $request->ip(),
+            ]);
+
+            return response()->json(['message' => 'Firma inválida'], 401);
+        }
 
         $topic = $request->input('type') ?? $request->input('topic');
-
         if ($topic !== 'payment') {
             return response()->json(['ok' => true]);
         }
 
-        $paymentId = $request->input('data.id') 
-            ?? $request->input('resource') 
-            ?? $request->input('id');
+        $paymentId = $request->input('data.id')
+            ?? $request->input('data_id')
+            ?? $request->query('data_id');
 
         if (!$paymentId) {
             return response()->json(['ok' => true]);
         }
 
-        $token = config('services.mercadopago.access_token');
-        MercadoPagoConfig::setAccessToken($token);
-
-        $client = new PaymentClient();
-
         try {
-
-            sleep(2); // pequeña espera para sincronización
-
-            $payment = $client->get($paymentId);
-
-            \Log::info('PAYMENT COMPLETO:', [
-                'status' => $payment->status,
-                'external_reference' => $payment->external_reference
-            ]);
-
-            if (!$payment->external_reference) {
-                return response()->json(['ok' => true]);
-            }
-
-            $pedido = Pedido::with('productos')->find($payment->external_reference);
-
-            if (!$pedido) {
-                return response()->json(['ok' => true]);
-            }
-
-            $nuevoEstado = null;
-
-            switch ($payment->status) {
-
-                case 'approved':
-                    $nuevoEstado = 'aprobado';
-                    break;
-
-                case 'pending':
-                case 'in_process':
-                    $nuevoEstado = 'pendiente';
-                    break;
-
-                case 'rejected':
-                case 'cancelled':
-                    $nuevoEstado = 'rechazado';
-                    break;
-
-                case 'refunded':
-                case 'charged_back':
-                    $nuevoEstado = 'reembolsado';
-                    break;
-
-                default:
-                    return response()->json(['ok' => true]);
-            }
-
-            // 🚨 SOLO PROCESAR SI CAMBIA EL ESTADO (evita duplicados)
-            if ($pedido->estado_pago !== $nuevoEstado) {
-
-                \DB::transaction(function () use ($pedido, $nuevoEstado) {
-
-                    $pedido->estado_pago = $nuevoEstado;
-                    $pedido->save();
-
-                    // 🔥 SI EL PAGO FUE APROBADO
-                    if ($nuevoEstado === 'aprobado') {
-
-                        // Cambiar estado logístico
-                        $pedido->estado = 'Pagado';
-                        $pedido->save();
-
-                        // Descontar stock
-                        foreach ($pedido->productos as $producto) {
-                            $cantidad = $producto->pivot->cantidad;
-                            $producto->decrement('stock', $cantidad);
-                        }
-
-                        // Vaciar carrito completo
-                        $carrito = \App\Models\Carrito::where('user_id', $pedido->user_id)->first();
-                        if ($carrito) {
-                            $carrito->productos()->detach();
-                        }
-
-                        \Log::info('PEDIDO PAGADO - STOCK DESCONTADO - CARRITO VACIADO', [
-                            'pedido_id' => $pedido->id
-                        ]);
-                    }
-                });
-
-                \Log::info('PEDIDO ACTUALIZADO', [
-                    'pedido_id' => $pedido->id,
-                    'nuevo_estado' => $nuevoEstado
-                ]);
-            }
-
-        } catch (\Exception $e) {
-
-            \Log::error('ERROR COMPLETO MP:', [
+            $payment = $payments->find((string) $paymentId);
+        } catch (\Throwable $e) {
+            Log::error('Webhook Mercado Pago: consulta del pago fallida', [
+                'payment_id' => $paymentId,
                 'message' => $e->getMessage(),
-                'payment_id' => $paymentId
             ]);
+
+            return response()->json(['ok' => true]);
         }
+
+        if (!$payment || !$payment->externalReference) {
+            return response()->json(['ok' => true]);
+        }
+
+        $pedido = Pedido::with('productos')->find($payment->externalReference);
+        if (!$pedido) {
+            return response()->json(['ok' => true]);
+        }
+
+        $nuevoEstado = match ($payment->status) {
+            'approved' => 'aprobado',
+            'pending', 'in_process' => 'pendiente',
+            'rejected', 'cancelled' => 'rechazado',
+            'refunded', 'charged_back' => 'reembolsado',
+            default => null,
+        };
+
+        if ($nuevoEstado === null || $pedido->estado_pago === $nuevoEstado) {
+            return response()->json(['ok' => true]);
+        }
+
+        DB::transaction(function () use ($pedido, $nuevoEstado) {
+            $pedido->estado_pago = $nuevoEstado;
+            $pedido->save();
+
+            if ($nuevoEstado !== 'aprobado') {
+                return;
+            }
+
+            $pedido->estado = 'Pagado';
+            $pedido->save();
+
+            foreach ($pedido->productos as $producto) {
+                $producto->decrement('stock', $producto->pivot->cantidad);
+            }
+
+            $carrito = \App\Models\Carrito::where('user_id', $pedido->user_id)->first();
+            if ($carrito) {
+                $carrito->productos()->detach();
+            }
+        });
+
+        Log::info('Pedido actualizado por webhook de pago', [
+            'pedido_id' => $pedido->id,
+            'nuevo_estado' => $nuevoEstado,
+        ]);
 
         return response()->json(['ok' => true]);
     }
